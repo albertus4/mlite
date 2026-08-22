@@ -55,6 +55,19 @@ class Site extends SiteModule
         $this->route('jknmobile/aplicare/(:str)', 'getAplicare');
         $this->route('jknmobile/aplicare/(:str)/(:str)', 'getAplicare');
 
+        /* Klinik Permata Bunda */
+        $this->route('vclaim-queue/auth', 'getToken');
+        $this->route('vclaim-queue/antrean', 'getAmbilAntrian');
+        $this->route('vclaim-queue/antrean/status', 'getStatusAntrian');
+        $this->route('vclaim-queue/antrean/sisa', 'getSisaAntrian');
+        $this->route('vclaim-queue/antrean/batal', 'getBatalAntrian');
+        $this->route('vclaim-queue/antrean/checkin', 'getPasienCheckIn');
+        $this->route('vclaim-queue/antrean/farmasi/add', 'getAmbilAntrianFarmasi');
+        $this->route('vclaim-queue/antrean/farmasi/status', 'getStatusAntrianFarmasi');
+        $this->route('vclaim-queue/peserta', 'getPasienBaru');        
+        $this->route('vclaim-queue/jadwaloperasi/rs', 'getOperasiRS');
+        $this->route('vclaim-queue/jadwaloperasi/pasien', 'getOperasiPasien');
+
         /* Start Old school routing */
         $this->route('jknmobile_v2', 'getIndex');
         $this->route('jknmobile_v2/token', 'getToken');
