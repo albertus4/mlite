@@ -99,6 +99,34 @@ class Admin extends AdminModule
                         }
                         return $dateExpr;
                     }, 2);
+                    $pdo->sqliteCreateFunction('DATE_ADD', function ($dateExpr, $intervalStr) {
+                        if ($dateExpr === null || $dateExpr === '') return '';
+                        $intervalStr = trim((string) $intervalStr);
+                        if (!preg_match('/^INTERVAL\s+(-?\d+)\s+(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)\s*$/i', $intervalStr, $m)) {
+                            return $dateExpr;
+                        }
+                        $num = (int) $m[1];
+                        $unit = strtoupper($m[2]);
+                        $mapUnit = ['YEAR' => 'year', 'MONTH' => 'month', 'DAY' => 'day',
+                                    'HOUR' => 'hour', 'MINUTE' => 'minute', 'SECOND' => 'second'];
+                        $phpUnit = $mapUnit[$unit] ?? 'day';
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(:\d{2})?$/', $dateExpr)) {
+                            return date('Y-m-d H:i:s', strtotime("{$dateExpr} +{$num} {$phpUnit}"));
+                        }
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateExpr)) {
+                            return date('Y-m-d', strtotime("{$dateExpr} +{$num} {$phpUnit}"));
+                        }
+                        return $dateExpr;
+                    }, 2);
+                    $pdo->sqliteCreateFunction('DATE', function ($d) {
+                        if (!$d) return '';
+                        if (preg_match('/^(\d{4}-\d{2}-\d{2})/', $d, $m)) return $m[1];
+                        $t = is_numeric($d) ? (int)$d : @strtotime($d);
+                        return $t ? date('Y-m-d', $t) : '';
+                    }, 1);
+                    $pdo->sqliteCreateFunction('IFNULL', function ($a, $b) {
+                        return ($a === null) ? $b : $a;
+                    }, 2);
                     $pdo->sqliteCreateFunction('NULLIF', function ($a, $b) {
                         return ((string)$a === (string)$b) ? null : $a;
                     }, 2);
@@ -112,7 +140,25 @@ class Admin extends AdminModule
 
     protected function _sqlIsSqlite()
     {
-        return defined('DBDRIVER') && DBDRIVER === 'sqlite';
+        static $cached = null;
+        if ($cached !== null) return $cached;
+        $cached = false;
+        if (defined('DBDRIVER') && DBDRIVER === 'sqlite') {
+            $cached = true;
+            return $cached;
+        }
+        try {
+            $pdo = method_exists($this, 'pdo') ? $this->pdo() : (isset($this->db) ? $this->db()->pdo() : null);
+            if ($pdo) {
+                $driverName = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+                if (is_string($driverName) && strtolower($driverName) === 'sqlite') {
+                    $cached = true;
+                    return $cached;
+                }
+            }
+        } catch (\Throwable $e) {
+        }
+        return $cached;
     }
 
     protected function _sqlToday()
@@ -156,6 +202,193 @@ class Admin extends AdminModule
             return implode(' || ', $parts);
         }
         return 'CONCAT(' . implode(', ', $parts) . ')';
+    }
+
+    protected function _stripSqlComments($sql)
+    {
+        $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+        $sql = preg_replace('/--.*$/m', '', $sql);
+        return $sql;
+    }
+
+    protected function _splitSqlStatements($sql)
+    {
+        $statements = [];
+        $len = strlen($sql);
+        $i = 0;
+        $cur = '';
+        $inSingle = false;
+        while ($i < $len) {
+            $ch = $sql[$i];
+            if ($ch === "'") {
+                $cur .= $ch;
+                if ($inSingle && isset($sql[$i + 1]) && $sql[$i + 1] === "'") {
+                    $cur .= "'";
+                    $i += 2;
+                    continue;
+                }
+                $inSingle = !$inSingle;
+                $i++;
+                continue;
+            }
+            if ($ch === ';' && !$inSingle) {
+                $trimmed = trim($cur);
+                if ($trimmed !== '') {
+                    $statements[] = $trimmed;
+                }
+                $cur = '';
+                $i++;
+                continue;
+            }
+            $cur .= $ch;
+            $i++;
+        }
+        $trimmed = trim($cur);
+        if ($trimmed !== '') {
+            $statements[] = $trimmed;
+        }
+        return $statements;
+    }
+
+    protected function _findMatchingParen($sql, $openPos)
+    {
+        $len = strlen($sql);
+        $depth = 1;
+        $i = $openPos + 1;
+        $inSingle = false;
+        while ($i < $len && $depth > 0) {
+            $ch = $sql[$i];
+            if ($ch === "'") {
+                if ($inSingle && isset($sql[$i + 1]) && $sql[$i + 1] === "'") {
+                    $i += 2;
+                    continue;
+                }
+                $inSingle = !$inSingle;
+                $i++;
+                continue;
+            }
+            if (!$inSingle) {
+                if ($ch === '(') {
+                    $depth++;
+                } elseif ($ch === ')') {
+                    $depth--;
+                    if ($depth === 0) {
+                        return $i;
+                    }
+                }
+            }
+            $i++;
+        }
+        return false;
+    }
+
+    protected function _quoteForSqlite($pdo, $value)
+    {
+        if ($value === null) {
+            return 'NULL';
+        }
+        if (is_int($value)) {
+            return (string) $value;
+        }
+        if (is_float($value)) {
+            return (string) $value;
+        }
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+        return $pdo->quote((string) $value);
+    }
+
+    protected function _interpolateSqliteVars($pdo, $sql, $vars)
+    {
+        return preg_replace_callback('/@([A-Za-z0-9_]+)/', function ($m) use ($pdo, $vars) {
+            $name = strtolower($m[1]);
+            if (!array_key_exists($name, $vars)) {
+                return 'NULL';
+            }
+            return $this->_quoteForSqlite($pdo, $vars[$name]);
+        }, $sql);
+    }
+
+    protected function _findTopLevelComma($str)
+    {
+        $len = strlen($str);
+        $depth = 0;
+        $inSingle = false;
+        for ($i = 0; $i < $len; $i++) {
+            $ch = $str[$i];
+            if ($ch === "'") {
+                if ($inSingle && isset($str[$i + 1]) && $str[$i + 1] === "'") {
+                    $i++;
+                    continue;
+                }
+                $inSingle = !$inSingle;
+                continue;
+            }
+            if (!$inSingle) {
+                if ($ch === '(') {
+                    $depth++;
+                } elseif ($ch === ')') {
+                    $depth--;
+                } elseif ($ch === ',' && $depth === 0) {
+                    return $i;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected function _rewriteSqliteDateFunctions($sql)
+    {
+        $funcNames = ['DATE_ADD', 'DATE_SUB'];
+        $safety = 0;
+        do {
+            $changed = false;
+            foreach ($funcNames as $idx => $fname) {
+                $sign = ($idx === 0) ? '+' : '-';
+                $offset = 0;
+                while (preg_match('/\b' . $fname . '\s*\(/i', $sql, $m, PREG_OFFSET_CAPTURE, $offset)) {
+                    $openPos = $m[0][1] + strlen($m[0][0]) - 1;
+                    $closePos = $this->_findMatchingParen($sql, $openPos);
+                    if ($closePos === false) {
+                        $offset = $openPos + 1;
+                        continue;
+                    }
+                    $inner = substr($sql, $openPos + 1, $closePos - $openPos - 1);
+                    $commaPos = $this->_findTopLevelComma($inner);
+                    if ($commaPos === false) {
+                        $offset = $closePos + 1;
+                        continue;
+                    }
+                    $expr1 = trim(substr($inner, 0, $commaPos));
+                    $intervalPart = trim(substr($inner, $commaPos + 1));
+                    if (!preg_match('/^INTERVAL\s+(.+?)\s+(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)\s*$/is', $intervalPart, $im)) {
+                        $offset = $closePos + 1;
+                        continue;
+                    }
+                    $intervalExpr = trim($im[1]);
+                    $unit = strtolower($im[2]);
+                    $unitMap = [
+                        'year' => 'years', 'month' => 'months', 'day' => 'days',
+                        'hour' => 'hours', 'minute' => 'minutes', 'second' => 'seconds'
+                    ];
+                    $sqliteUnit = $unitMap[$unit] ?? $unit . 's';
+                    $replacement = "datetime({$expr1}, '{$sign}' || ({$intervalExpr}) || ' {$sqliteUnit}')";
+                    $funcStart = $m[0][1];
+                    $before = $sql;
+                    $sql = substr_replace($sql, $replacement, $funcStart, $closePos - $funcStart + 1);
+                    if ($before !== $sql) {
+                        $changed = true;
+                    }
+                    $offset = $funcStart + strlen($replacement);
+                }
+            }
+            $safety++;
+            if ($safety > 100) {
+                break;
+            }
+        } while ($changed);
+        return $sql;
     }
 
     public function navigation()
@@ -701,12 +934,141 @@ class Admin extends AdminModule
             ];
         }
 
+        $this->_ensureSqliteCompatibility();
+        $pdo = $this->pdo();
+
+        if (!$this->_sqlIsSqlite()) {
+            try {
+                $cleanSql = $this->_stripSqlComments($sql);
+                $cleanSql = preg_replace('/\bSTART\s+TRANSACTION\s*;/i', ' ', $cleanSql);
+                $cleanSql = preg_replace('/\bBEGIN\s+(TRANSACTION|WORK)?\s*;/i', ' ', $cleanSql);
+                $cleanSql = preg_replace('/\bCOMMIT\s*;/i', ' ', $cleanSql);
+                $cleanSql = preg_replace('/\bROLLBACK\s*;/i', ' ', $cleanSql);
+                $cleanSql = preg_replace('/\bFROM\s+DUAL\b/i', ' ', $cleanSql);
+                $pdo->exec($cleanSql);
+                return [
+                    'status' => true,
+                    'message' => 'Seeder berhasil diimport: ' . $filename
+                ];
+            } catch (\Throwable $e) {
+                return [
+                    'status' => false,
+                    'message' => 'Import seeder gagal: ' . $e->getMessage()
+                ];
+            }
+        }
+
         try {
-            $this->pdo()->exec($sql);
+            $vars = [];
+            $sql = $this->_stripSqlComments($sql);
+
+            $sql = preg_replace('/\bSTART\s+TRANSACTION\s*;/i', ' ', $sql);
+            $sql = preg_replace('/\bBEGIN\s+(TRANSACTION|WORK)?\s*;/i', ' ', $sql);
+            $sql = preg_replace('/\bCOMMIT\s*;/i', ' ', $sql);
+            $sql = preg_replace('/\bROLLBACK\s*;/i', ' ', $sql);
+            $sql = preg_replace('/\bFROM\s+DUAL\b/i', ' ', $sql);
+            $sql = $this->_rewriteSqliteDateFunctions($sql);
+
+            $sql = preg_replace_callback(
+                '/UPDATE\s+(\w+)\s+a\s+INNER\s+JOIN\s+(\w+)\s+d\s+ON\s+d\.id\s*=\s*a\.clinical_pathway_day_id\s+SET\s+(.*?)\s+WHERE\s+d\.clinical_pathway_id\s+IN\s*\(([^)]+)\)\s*;/is',
+                function ($um) {
+                    $tblActivity = $um[1];
+                    $tblDay = $um[2];
+                    $setClauseRaw = $um[3];
+                    $inList = $um[4];
+
+                    $setClause = preg_replace('/^a\./m', '', $setClauseRaw);
+                    $setClause = preg_replace('/,\s*a\./', ', ', $setClause);
+                    $setClause = preg_replace('/\ba\.(\w+)/', '$1', $setClause);
+
+                    return "UPDATE {$tblActivity} SET {$setClause} "
+                         . "WHERE clinical_pathway_day_id IN ("
+                         . "SELECT id FROM {$tblDay} WHERE clinical_pathway_id IN ({$inList})"
+                         . ");";
+                },
+                $sql
+            );
+
+            $sql = preg_replace_callback(
+                '/UPDATE\s+(\w+)\s+e\s+INNER\s+JOIN\s+(\w+)\s+a\s+ON\s+(.+?)\s+SET\s+(.*?)\s+WHERE\s+(.*?)\s*;/is',
+                function ($um) {
+                    $tblE = $um[1];
+                    $tblA = $um[2];
+                    $onCond = $um[3];
+                    $setRaw = $um[4];
+                    $whereCond = $um[5];
+
+                    $setClause = preg_replace('/^e\./m', '', $setRaw);
+                    $setClause = preg_replace('/,\s*e\./', ', ', $setClause);
+                    $setClause = preg_replace('/\be\.(\w+)/', '$1', $setClause);
+
+                    return "UPDATE {$tblE} SET {$setClause} "
+                         . "WHERE id IN ("
+                         . "SELECT e.id FROM {$tblE} e "
+                         . "INNER JOIN {$tblA} a ON {$onCond} "
+                         . "WHERE {$whereCond}"
+                         . ");";
+                },
+                $sql
+            );
+
+            $statements = $this->_splitSqlStatements($sql);
+            $executed = 0;
+
+            foreach ($statements as $stmt) {
+                $trimmed = trim($stmt);
+                if (preg_match('/^\s*SET\s+@([A-Za-z0-9_]+)\s*=\s*(.+?)\s*;?\s*$/is', $trimmed, $sm)) {
+                    $varName = strtolower($sm[1]);
+                    $valueExpr = trim($sm[2]);
+                    $value = null;
+                    $ve = ltrim($valueExpr);
+                    if ($ve !== '' && $ve[0] === '(') {
+                        $cp = $this->_findMatchingParen($valueExpr, 0);
+                        if ($cp !== false) {
+                            $inner = trim(substr($valueExpr, 1, $cp - 1));
+                            if (stripos($inner, 'SELECT') === 0) {
+                                $interpolated = $this->_interpolateSqliteVars($pdo, $inner, $vars);
+                                $st = $pdo->query($interpolated);
+                                if ($st) {
+                                    $row = $st->fetch(\PDO::FETCH_NUM);
+                                    $value = $row ? $row[0] : null;
+                                }
+                            } else {
+                                $interpolated = $this->_interpolateSqliteVars($pdo, 'SELECT ' . $inner, $vars);
+                                $st = $pdo->query($interpolated);
+                                if ($st) {
+                                    $row = $st->fetch(\PDO::FETCH_NUM);
+                                    $value = $row ? $row[0] : null;
+                                }
+                            }
+                        }
+                    } else {
+                        $interpolated = $this->_interpolateSqliteVars($pdo, 'SELECT ' . $valueExpr, $vars);
+                        $st = $pdo->query($interpolated);
+                        if ($st) {
+                            $row = $st->fetch(\PDO::FETCH_NUM);
+                            $value = $row ? $row[0] : null;
+                        }
+                    }
+                    $vars[$varName] = $value;
+                    continue;
+                }
+
+                $interpolated = $this->_interpolateSqliteVars($pdo, $stmt, $vars);
+                try {
+                    $pdo->exec($interpolated);
+                    $executed++;
+                } catch (\Throwable $stmtE) {
+                    $preview = substr($interpolated, 0, 300);
+                    throw new \RuntimeException(
+                        'Statement gagal (' . $stmtE->getMessage() . '): ' . $preview
+                    );
+                }
+            }
 
             return [
                 'status' => true,
-                'message' => 'Seeder berhasil diimport: ' . $filename
+                'message' => 'Seeder berhasil diimport: ' . $filename . ' (' . $executed . ' pernyataan SQL)'
             ];
         } catch (\Throwable $e) {
             return [
