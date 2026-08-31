@@ -234,9 +234,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Kirim WhatsApp</h4>
+        <h4 class="modal-title"><i class="fa fa-whatsapp"></i> Kirim WhatsApp</h4>
       </div>
       <div class="modal-body">
+        <div id="waStatusAlert" class="alert hidden" role="alert" style="margin-bottom:15px;"></div>
         <div class="form-floating number">
           <label for="floatingPassword">Nomor</label>
           <input type="text" name="number" class="form-control" id="number" placeholder="Nomor WhatsApp Tujuan">
@@ -247,8 +248,12 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary" onclick="KirimWA()" data-dismiss="modal">Kirim</button>
+        <button type="button" class="btn btn-default" id="waBtnBatal" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="waBtnKirim" onclick="KirimWA()">
+          <i class="fa fa-whatsapp"></i>
+          <span class="wa-btn-label"> Kirim</span>
+          <i class="fa fa-spinner fa-spin wa-btn-spinner hidden" style="margin-left:4px;"></i>
+        </button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -586,37 +591,157 @@
 <script>
   //triggered when modal is about to be shown
   $('#waModal').on('show.bs.modal', function(e) {
-      //get data-id attribute of the clicked element
       var no_tlp = $(e.relatedTarget).data('no_tlp');
-      //populate the textbox
       $(e.currentTarget).find('input[name="number"]').val(no_tlp);
+      _resetWaUi();
   });
+
+  function _resetWaUi() {
+    var $btnKirim = $('#waBtnKirim');
+    var $btnBatal = $('#waBtnBatal');
+    var $alert = $('#waStatusAlert');
+    $btnKirim.prop('disabled', false);
+    $btnBatal.prop('disabled', false);
+    $('#number, #message').prop('disabled', false);
+    $btnKirim.find('.wa-btn-label').text(' Kirim');
+    $btnKirim.find('.wa-btn-spinner').addClass('hidden');
+    $alert.removeClass('alert-success alert-danger alert-warning alert-info').addClass('hidden').html('');
+  }
+
+  function _setWaLoading(isLoading) {
+    var $btnKirim = $('#waBtnKirim');
+    var $btnBatal = $('#waBtnBatal');
+    if (isLoading) {
+      $btnKirim.prop('disabled', true);
+      $btnBatal.prop('disabled', true);
+      $('#number, #message').prop('disabled', true);
+      $btnKirim.find('.wa-btn-label').text(' Mengirim...');
+      $btnKirim.find('.wa-btn-spinner').removeClass('hidden');
+    } else {
+      $btnKirim.prop('disabled', false);
+      $btnBatal.prop('disabled', false);
+      $('#number, #message').prop('disabled', false);
+      $btnKirim.find('.wa-btn-label').text(' Kirim');
+      $btnKirim.find('.wa-btn-spinner').addClass('hidden');
+    }
+  }
+
+  function _showWaStatus(type, html) {
+    var $alert = $('#waStatusAlert');
+    $alert.removeClass('alert-success alert-danger alert-warning alert-info hidden');
+    var iconMap = { success: 'check-circle', danger: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+    var icon = iconMap[type] || 'info-circle';
+    var clsMap = { success: 'alert-success', danger: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
+    $alert.addClass(clsMap[type] || 'alert-info');
+    $alert.html('<i class="fa fa-' + icon + '"></i> ' + html);
+  }
+
+  function _truncateForDebug(str, n) {
+    if (!str) return '';
+    if (typeof str !== 'string') str = String(str);
+    if (str.length <= n) return str;
+    return str.substring(0, n) + '...';
+  }
+
   function KirimWA() {
-  	var xhttp = new XMLHttpRequest();
-    var api_key = '{$waapitoken}';
-  	var sender = '{$waapiphonenumber}';
-  	var number = document.getElementById("number").value;
-  	var message = document.getElementById("message").value;
-  	//console.log(api_key + " - " + number + " - " + message);
-  	xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        var data=xhttp.responseText;
-        var timeout = '504 Gateway Time-out';
-        if(data.indexOf(timeout) != -1) {
-            alert('Timeout!!! Gagal mengirim pesan.');
-        } else {
-            var jsonResponse = JSON.parse(data);
-            if(jsonResponse["status"] == true) {
-              alert('Sukses mengirim pesan.');
-            } else {
-            alert('Gagal mengirim pesan.\n' + jsonResponse["msg"]);
-            }
-        }
+    var number = document.getElementById("number").value.trim();
+    var message = document.getElementById("message").value;
+
+    if (!number) {
+      _showWaStatus('warning', 'Nomor WhatsApp tujuan harus diisi.');
+      return;
+    }
+    if (!message || message.trim() === '') {
+      _showWaStatus('warning', 'Isi pesan tidak boleh kosong.');
+      return;
+    }
+
+    var baseURL = (typeof mlite !== 'undefined')
+      ? (mlite.url + '/' + mlite.admin)
+      : '{?=url(ADMIN)?}';
+    var kirimUrl = baseURL + '/pasien/kirimwa?t=' + encodeURIComponent((typeof mlite !== 'undefined' && mlite.token) ? mlite.token : '');
+
+    _setWaLoading(true);
+    _showWaStatus('info', 'Sedang mengirim pesan, mohon tunggu...');
+
+    var hasResponded = false;
+
+    function _finish(success, msg) {
+      if (hasResponded) return;
+      hasResponded = true;
+      _setWaLoading(false);
+      if (success) {
+        _showWaStatus('success', msg || 'Pesan berhasil dikirim.');
+        setTimeout(function() {
+          $('#waModal').modal('hide');
+        }, 1500);
+      } else {
+        _showWaStatus('danger', msg || 'Gagal mengirim pesan. Silakan coba lagi.');
       }
-  	};
-  	xhttp.open("POST", "{?=url([ADMIN,'api','kirimwa'])?}", true);
-  	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  	xhttp.send("api_key=" + api_key + "&sender=" + sender + "&number=" + number + "&message=" + message);
+    }
+
+    $.ajax({
+      url: kirimUrl,
+      method: 'POST',
+      dataType: 'text',
+      data: {
+        number: number,
+        message: message
+      },
+      timeout: 35000
+    })
+    .done(function(dataRaw, textStatus, jqXHR) {
+      var data = (dataRaw == null) ? '' : String(dataRaw);
+      if (data.indexOf('504 Gateway Time-out') !== -1) {
+        _finish(false, 'Timeout 504. Gateway WA tidak merespons, coba sesaat lagi.');
+        return;
+      }
+      var jsonResponse = null;
+      try {
+        jsonResponse = $.parseJSON(data);
+      } catch (e) {
+        var ct = jqXHR.getResponseHeader('Content-Type') || '';
+        if (/html/i.test(ct) || /<\s*(html|!doctype|body|head)\b/i.test(data)) {
+          _finish(false, 'Sesu permintaan tidak dikenali (respons HTML/redirect). Coba refresh halaman lalu coba lagi. Preview: ' + _truncateForDebug(data.replace(/<[^>]+>/g, ' '), 80));
+          return;
+        }
+        _finish(false, 'Respons server bukan JSON. Preview: ' + _truncateForDebug(data, 120));
+        return;
+      }
+      if (jsonResponse && (jsonResponse.status === true || jsonResponse.status === 'true' || jsonResponse.status === 1 || jsonResponse.status === '1')) {
+        _finish(true, jsonResponse.msg || jsonResponse.message || 'Sukses mengirim pesan.');
+      } else {
+        var err = (jsonResponse && (jsonResponse.msg || jsonResponse.message)) ? (jsonResponse.msg || jsonResponse.message) : 'Pesan gagal dikirim.';
+        _finish(false, String(err));
+      }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      var resp = jqXHR.responseText;
+      if (textStatus === 'timeout') {
+        _finish(false, 'Timeout. Gateway WA tidak merespons dalam 35 detik.');
+        return;
+      }
+      if (jqXHR.status === 403) {
+        _finish(false, 'Akses ditolak (403). Pastikan sesi login aktif dan coba lagi.');
+        return;
+      }
+      if (jqXHR.status === 0) {
+        _finish(false, 'Koneksi gagal (0). Periksa jaringan atau sinkronisasi waktu cookie.');
+        return;
+      }
+      var fallback = 'Gagal mengirim. HTTP ' + (jqXHR.status || '?') + ': ' + (errorThrown || textStatus || '');
+      if (resp && typeof resp === 'string' && resp !== '') {
+        try {
+          var j = $.parseJSON(resp);
+          if (j && (j.msg || j.message)) {
+            _finish(false, j.msg || j.message);
+            return;
+          }
+        } catch (e) {}
+        fallback += ' | Preview: ' + _truncateForDebug(resp.replace(/<[^>]+>/g, ' '), 80);
+      }
+      _finish(false, fallback);
+    });
   }
 </script>
 <script type="text/javascript">

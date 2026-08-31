@@ -204,6 +204,140 @@ class Admin extends AdminModule
     exit();
   }
 
+  private function _isSafeUrl($url) {
+      $parsed = parse_url($url);
+      if (!$parsed || !isset($parsed['scheme'])) {
+          return false;
+      }
+      $scheme = strtolower($parsed['scheme']);
+      if ($scheme !== 'https' && $scheme !== 'http') {
+          return false;
+      }
+      $host = $parsed['host'] ?? '';
+      if ($host === '' || $host === 'localhost' || $host === '127.0.0.1') {
+          return $scheme === 'http' || $scheme === 'https';
+      }
+      if ($scheme === 'https') {
+          return true;
+      }
+      $ips = gethostbynamel($host);
+      if (!$ips) {
+          return false;
+      }
+      foreach ($ips as $ip) {
+          if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+              return true;
+          }
+      }
+      return false;
+  }
+
+  public function postKirimwa()
+  {
+      header('Content-Type: application/json; charset=utf-8');
+
+      $waapitoken = (string)$this->settings->get('wagateway.token');
+      $waapiphonenumber = (string)$this->settings->get('wagateway.phonenumber');
+      $waapiserver = (string)$this->settings->get('wagateway.server');
+
+      if ($waapitoken === '' || $waapiphonenumber === '' || $waapiserver === '') {
+          echo json_encode([
+              'status' => false,
+              'msg' => 'Pengaturan WhatsApp Gateway belum lengkap (token/nomor/server). Silakan atur terlebih dahulu di Pengaturan WA Gateway.'
+          ]);
+          exit();
+      }
+
+      $number = trim((string)($_POST['number'] ?? ''));
+      $message = (string)($_POST['message'] ?? '');
+
+      if ($number === '') {
+          echo json_encode(['status' => false, 'msg' => 'Nomor WhatsApp tujuan tidak boleh kosong.']);
+          exit();
+      }
+      if (trim($message) === '') {
+          echo json_encode(['status' => false, 'msg' => 'Isi pesan tidak boleh kosong.']);
+          exit();
+      }
+
+      $url = rtrim($waapiserver, '/') . '/wagateway/kirimpesan';
+
+      if (!$this->_isSafeUrl($url)) {
+          echo json_encode([
+              'status' => false,
+              'msg' => 'URL WA Gateway tidak valid atau tidak aman ('.$url.').'
+          ]);
+          exit();
+      }
+
+      $scheme = strtolower(parse_url($url, PHP_URL_SCHEME) ?? 'https');
+
+      try {
+          $curlHandle = curl_init();
+          curl_setopt($curlHandle, CURLOPT_URL, $url);
+          if ($scheme === 'https') {
+              curl_setopt($curlHandle, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+              curl_setopt($curlHandle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
+              curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, true);
+          } else {
+              curl_setopt($curlHandle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+              curl_setopt($curlHandle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+              curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+          }
+          curl_setopt($curlHandle, CURLOPT_FOLLOWLOCATION, false);
+          curl_setopt($curlHandle, CURLOPT_POSTFIELDS, http_build_query([
+              'type' => 'text',
+              'sender' => $waapiphonenumber,
+              'number' => $number,
+              'message' => $message,
+              'api_key' => $waapitoken
+          ]));
+          curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+          curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+          curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
+          curl_setopt($curlHandle, CURLOPT_POST, 1);
+
+          $response = curl_exec($curlHandle);
+          $httpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
+          $curlError = curl_error($curlHandle);
+          curl_close($curlHandle);
+
+          if ($response === false || $response === '') {
+              echo json_encode([
+                  'status' => false,
+                  'msg' => 'Gagal terhubung ke WA Gateway. ' . ($curlError ? 'Curl error: ' . $curlError : 'Respons kosong.')
+              ]);
+              exit();
+          }
+
+          $decoded = json_decode($response, true);
+          if (!is_array($decoded)) {
+              $preview = mb_substr($response, 0, 200);
+              echo json_encode([
+                  'status' => false,
+                  'msg' => 'Respons WA Gateway tidak valid (bukan JSON). HTTP ' . $httpCode . '. Preview: ' . $preview
+              ]);
+              exit();
+          }
+
+          $status = $decoded['status'] ?? false;
+          $isSuccess = ($status === true || $status === 'true' || $status === 1 || $status === '1');
+          $pesan = (string)($decoded['msg'] ?? $decoded['message'] ?? ($isSuccess ? 'Pesan berhasil dikirim.' : 'Pesan gagal dikirim.'));
+
+          echo json_encode([
+              'status' => $isSuccess,
+              'msg' => $pesan,
+              'raw' => $decoded
+          ]);
+      } catch (\Throwable $e) {
+          echo json_encode([
+              'status' => false,
+              'msg' => 'Kesalahan sistem saat mengirim WA: ' . $e->getMessage()
+          ]);
+      }
+      exit();
+  }
+
   public function postSave()
   {
     $mlite_crud_permissions = $this->core->loadCrudPermissions('pasien');
