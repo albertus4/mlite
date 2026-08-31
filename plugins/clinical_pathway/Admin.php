@@ -19,8 +19,148 @@ class Admin extends AdminModule
         'Outcome'
     ];
 
+    private static $_sqliteUdfInjected = false;
+
+    protected function _ensureSqliteCompatibility()
+    {
+        if (!self::$_sqliteUdfInjected && $this->_sqlIsSqlite()) {
+            try {
+                $pdo = method_exists($this, 'pdo') ? $this->pdo() : (isset($this->db) ? $this->db()->pdo() : null);
+                if (!$pdo) return;
+                if (method_exists($pdo, 'sqliteCreateFunction')) {
+                    $pdo->sqliteCreateFunction('NOW', function () {
+                        return date('Y-m-d H:i:s');
+                    }, 0);
+                    $pdo->sqliteCreateFunction('CURDATE', function () {
+                        return date('Y-m-d');
+                    }, 0);
+                    $pdo->sqliteCreateFunction('CONCAT', function (...$args) {
+                        $out = '';
+                        foreach ($args as $a) {
+                            if ($a === null) continue;
+                            $out .= (string) $a;
+                        }
+                        return $out;
+                    });
+                    $pdo->sqliteCreateFunction('CONCAT_WS', function ($sep, ...$args) {
+                        $sep = (string) $sep;
+                        $parts = [];
+                        foreach ($args as $a) {
+                            if ($a === null || trim((string)$a) === '') continue;
+                            $parts[] = (string) $a;
+                        }
+                        return implode($sep, $parts);
+                    });
+                    $pdo->sqliteCreateFunction('DATEDIFF', function ($akhir, $awal) {
+                        $ta = is_string($akhir) ? strtotime($akhir) : (is_numeric($akhir) ? $akhir : 0);
+                        $tw = is_string($awal) ? strtotime($awal) : (is_numeric($awal) ? $awal : 0);
+                        if (!$ta || !$tw) return 0;
+                        return (int) round(($ta - $tw) / 86400);
+                    }, 2);
+                    $pdo->sqliteCreateFunction('DATE_FORMAT', function ($expr, $fmt) {
+                        if ($expr === null || $expr === '') return '';
+                        $t = is_string($expr) ? @strtotime($expr) : (is_numeric($expr) ? (int)$expr : 0);
+                        if (!$t) return '';
+                        $map = [
+                            '%Y' => 'Y', '%y' => 'y', '%m' => 'm', '%c' => 'n',
+                            '%d' => 'd', '%e' => 'j', '%H' => 'H', '%h' => 'h',
+                            '%i' => 'i', '%s' => 's', '%p' => 'A', '%M' => 'F',
+                            '%b' => 'M', '%W' => 'l', '%w' => 'w',
+                        ];
+                        $out = '';
+                        $len = strlen($fmt);
+                        for ($i = 0; $i < $len; $i++) {
+                            $ch = $fmt[$i];
+                            if ($ch === '%' && isset($fmt[$i + 1]) && isset($map[$fmt[$i] . $fmt[$i + 1]])) {
+                                $out .= date($map[$fmt[$i] . $fmt[$i + 1]], $t);
+                                $i++;
+                            } else {
+                                $out .= $ch;
+                            }
+                        }
+                        return $out;
+                    }, 2);
+                    $pdo->sqliteCreateFunction('DATE_SUB', function ($dateExpr, $intervalStr) {
+                        if ($dateExpr === null || $dateExpr === '') return '';
+                        $intervalStr = trim((string) $intervalStr);
+                        if (!preg_match('/^INTERVAL\s+(-?\d+)\s+(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)\s*$/i', $intervalStr, $m)) {
+                            return $dateExpr;
+                        }
+                        $num = (int) $m[1];
+                        $unit = strtoupper($m[2]);
+                        $mapUnit = ['YEAR' => 'year', 'MONTH' => 'month', 'DAY' => 'day',
+                                    'HOUR' => 'hour', 'MINUTE' => 'minute', 'SECOND' => 'second'];
+                        $phpUnit = $mapUnit[$unit] ?? 'day';
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(:\d{2})?$/', $dateExpr)) {
+                            return date('Y-m-d H:i:s', strtotime("{$dateExpr} -{$num} {$phpUnit}"));
+                        }
+                        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateExpr)) {
+                            return date('Y-m-d', strtotime("{$dateExpr} -{$num} {$phpUnit}"));
+                        }
+                        return $dateExpr;
+                    }, 2);
+                    $pdo->sqliteCreateFunction('NULLIF', function ($a, $b) {
+                        return ((string)$a === (string)$b) ? null : $a;
+                    }, 2);
+                }
+            } catch (\Throwable $e) {
+                // ignore UDF register failure; methods already use fallbacks.
+            }
+            self::$_sqliteUdfInjected = true;
+        }
+    }
+
+    protected function _sqlIsSqlite()
+    {
+        return defined('DBDRIVER') && DBDRIVER === 'sqlite';
+    }
+
+    protected function _sqlToday()
+    {
+        return $this->_sqlIsSqlite() ? "date('now','localtime')" : 'CURDATE()';
+    }
+
+    protected function _sqlSubYears($exprTanggal, $jumlahTahun)
+    {
+        $n = (int) $jumlahTahun;
+        if ($this->_sqlIsSqlite()) {
+            return "date(({$exprTanggal}), '-{$n} year')";
+        }
+        return "DATE_SUB(({$exprTanggal}), INTERVAL {$n} YEAR)";
+    }
+
+    protected function _sqlDateDiffDays($exprAkhir, $exprAwal)
+    {
+        if ($this->_sqlIsSqlite()) {
+            return "julianday({$exprAkhir}) - julianday({$exprAwal})";
+        }
+        return "DATEDIFF({$exprAkhir}, {$exprAwal})";
+    }
+
+    protected function _sqlDateFormatYm($exprTanggal)
+    {
+        if ($this->_sqlIsSqlite()) {
+            return "strftime('%Y-%m', {$exprTanggal})";
+        }
+        return "DATE_FORMAT({$exprTanggal}, '%Y-%m')";
+    }
+
+    protected function _sqlNow()
+    {
+        return $this->_sqlIsSqlite() ? "datetime('now','localtime')" : 'NOW()';
+    }
+
+    protected function _sqlConcat(...$parts)
+    {
+        if ($this->_sqlIsSqlite()) {
+            return implode(' || ', $parts);
+        }
+        return 'CONCAT(' . implode(', ', $parts) . ')';
+    }
+
     public function navigation()
     {
+        $this->_ensureSqliteCompatibility();
         return [
             'Dashboard' => 'manage',
             'Master CP' => 'master',
@@ -36,6 +176,7 @@ class Admin extends AdminModule
 
     public function getManage()
     {
+        $this->_ensureSqliteCompatibility();
         $this->_addHeaderFiles();
 
         return $this->draw('manage.html', [
@@ -289,6 +430,7 @@ class Admin extends AdminModule
 
     public function postGeneratetemplate()
     {
+        $this->_ensureSqliteCompatibility();
         $cpId = (int) ($_POST['clinical_pathway_id'] ?? 0);
         $icd = trim($_POST['icd'] ?? '');
         $result = $this->generateTemplateFromEvidence($cpId, $icd);
@@ -299,6 +441,7 @@ class Admin extends AdminModule
 
     public function postGeneratepatient()
     {
+        $this->_ensureSqliteCompatibility();
         $noRawat = trim($_POST['no_rawat'] ?? '');
         $result = $this->generateClinicalPathwayForPatient($noRawat);
 
@@ -995,11 +1138,13 @@ class Admin extends AdminModule
 
     protected function getTopDiagnosisOptions($limit = 100)
     {
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
         $sql = "SELECT dp.kd_penyakit, py.nm_penyakit, COUNT(*) AS jumlah
                 FROM diagnosa_pasien dp
                 INNER JOIN penyakit py ON py.kd_penyakit = dp.kd_penyakit
                 INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
-                WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)
+                WHERE rp.tgl_registrasi >= {$threeYearsAgo}
                 GROUP BY dp.kd_penyakit, py.nm_penyakit
                 ORDER BY jumlah DESC, dp.kd_penyakit ASC
                 LIMIT " . (int) $limit;
@@ -1027,17 +1172,24 @@ class Admin extends AdminModule
 
     protected function getCaseProfile($icd)
     {
+        if ($icd === '') {
+            return [];
+        }
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
+        $exprKeluarHariIni = "COALESCE(ki.tgl_keluar, {$today})";
+        $diffLos = $this->_sqlDateDiffDays($exprKeluarHariIni, 'rp.tgl_registrasi');
         $sql = "SELECT COUNT(DISTINCT dp.no_rawat) AS total_kasus,
-                       ROUND(AVG(IFNULL(DATEDIFF(COALESCE(ki.tgl_keluar, CURDATE()), rp.tgl_registrasi), 0)), 2) AS avg_los,
-                       MIN(IFNULL(DATEDIFF(COALESCE(ki.tgl_keluar, CURDATE()), rp.tgl_registrasi), 0)) AS min_los,
-                       MAX(IFNULL(DATEDIFF(COALESCE(ki.tgl_keluar, CURDATE()), rp.tgl_registrasi), 0)) AS max_los,
+                       ROUND(AVG(IFNULL({$diffLos}, 0)), 2) AS avg_los,
+                       MIN(IFNULL({$diffLos}, 0)) AS min_los,
+                       MAX(IFNULL({$diffLos}, 0)) AS max_los,
                        SUM(CASE WHEN rp.stts = 'Meninggal' THEN 1 ELSE 0 END) AS meninggal,
                        SUM(CASE WHEN rp.stts = 'Pulang Paksa' THEN 1 ELSE 0 END) AS pulang_paksa
                 FROM diagnosa_pasien dp
                 INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
                 LEFT JOIN kamar_inap ki ON ki.no_rawat = rp.no_rawat
                 WHERE dp.kd_penyakit = :icd
-                  AND rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)";
+                  AND rp.tgl_registrasi >= {$threeYearsAgo}";
 
         $stmt = $this->pdo()->prepare($sql);
         $stmt->execute([':icd' => $icd]);
@@ -1047,13 +1199,16 @@ class Admin extends AdminModule
 
     protected function getMonthlyTrend($icd)
     {
-        $sql = "SELECT DATE_FORMAT(rp.tgl_registrasi, '%Y-%m') AS periode,
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
+        $fmt = $this->_sqlDateFormatYm('rp.tgl_registrasi');
+        $sql = "SELECT {$fmt} AS periode,
                        COUNT(DISTINCT dp.no_rawat) AS jumlah
                 FROM diagnosa_pasien dp
                 INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
                 WHERE dp.kd_penyakit = :icd
-                  AND rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)
-                GROUP BY DATE_FORMAT(rp.tgl_registrasi, '%Y-%m')
+                  AND rp.tgl_registrasi >= {$threeYearsAgo}
+                GROUP BY {$fmt}
                 ORDER BY periode ASC";
 
         $stmt = $this->pdo()->prepare($sql);
@@ -1066,11 +1221,14 @@ class Admin extends AdminModule
     {
         return $this->getEvidenceCategoryRows(
             $icd,
-            "periksa_lab p
-             INNER JOIN jns_perawatan_lab j ON j.kd_jenis_prw = p.kd_jenis_prw",
-            "p.kd_jenis_prw",
-            "j.nm_perawatan",
-            (int) $limit
+            "periksa_lab",
+            "periksa_lab.kd_jenis_prw",
+            "jns_perawatan_lab.nm_perawatan",
+            (int) $limit,
+            [
+                ['INNER JOIN', 'jns_perawatan_lab', 'jns_perawatan_lab.kd_jenis_prw = periksa_lab.kd_jenis_prw']
+            ],
+            "periksa_lab.no_rawat = dp.no_rawat"
         );
     }
 
@@ -1078,11 +1236,14 @@ class Admin extends AdminModule
     {
         return $this->getEvidenceCategoryRows(
             $icd,
-            "periksa_radiologi p
-             INNER JOIN jns_perawatan_radiologi j ON j.kd_jenis_prw = p.kd_jenis_prw",
-            "p.kd_jenis_prw",
-            "j.nm_perawatan",
-            (int) $limit
+            "periksa_radiologi",
+            "periksa_radiologi.kd_jenis_prw",
+            "jns_perawatan_radiologi.nm_perawatan",
+            (int) $limit,
+            [
+                ['INNER JOIN', 'jns_perawatan_radiologi', 'jns_perawatan_radiologi.kd_jenis_prw = periksa_radiologi.kd_jenis_prw']
+            ],
+            "periksa_radiologi.no_rawat = dp.no_rawat"
         );
     }
 
@@ -1090,13 +1251,15 @@ class Admin extends AdminModule
     {
         return $this->getEvidenceCategoryRows(
             $icd,
-            "resep_obat ro
-             INNER JOIN resep_dokter rd ON rd.no_resep = ro.no_resep
-             INNER JOIN databarang db ON db.kode_brng = rd.kode_brng",
-            "rd.kode_brng",
-            "db.nama_brng",
+            "resep_obat",
+            "resep_dokter.kode_brng",
+            "databarang.nama_brng",
             (int) $limit,
-            "ro.no_rawat = dp.no_rawat"
+            [
+                ['INNER JOIN', 'resep_dokter', 'resep_dokter.no_resep = resep_obat.no_resep'],
+                ['INNER JOIN', 'databarang', 'databarang.kode_brng = resep_dokter.kode_brng']
+            ],
+            "resep_obat.no_rawat = dp.no_rawat"
         );
     }
 
@@ -1104,27 +1267,40 @@ class Admin extends AdminModule
     {
         return $this->getEvidenceCategoryRows(
             $icd,
-            "prosedur_pasien pp
-             INNER JOIN icd9 i9 ON i9.kode = pp.kode",
-            "pp.kode",
-            "i9.deskripsi_panjang",
+            "prosedur_pasien",
+            "prosedur_pasien.kode",
+            "icd9.deskripsi_panjang",
             (int) $limit,
-            "pp.no_rawat = dp.no_rawat"
+            [
+                ['INNER JOIN', 'icd9', 'icd9.kode = prosedur_pasien.kode']
+            ],
+            "prosedur_pasien.no_rawat = dp.no_rawat"
         );
     }
 
-    protected function getEvidenceCategoryRows($icd, $fromClause, $codeField, $nameField, $limit = 10, $relation = 'p.no_rawat = dp.no_rawat')
+    protected function getEvidenceCategoryRows($icd, $baseTable, $codeField, $nameField, $limit = 10, $joins = [], $relation = '')
     {
         $totalPatients = max(1, $this->getTotalCasesByDiagnosis($icd));
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
+
+        $joinSQL = '';
+        foreach ($joins as $j) {
+            if (!is_array($j) || count($j) < 3) continue;
+            [$type, $table, $on] = $j;
+            $joinSQL .= " {$type} {$table} ON {$on}";
+        }
+
         $sql = "SELECT {$codeField} AS kode,
                        {$nameField} AS aktivitas,
                        COUNT(*) AS frekuensi,
                        ROUND((COUNT(*) / :total_patients) * 100, 2) AS persentase
                 FROM diagnosa_pasien dp
-                INNER JOIN {$fromClause} ON {$relation}
                 INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
+                INNER JOIN {$baseTable} ON " . ($relation ?: "{$baseTable}.no_rawat = dp.no_rawat") . "
+                {$joinSQL}
                 WHERE dp.kd_penyakit = :icd
-                  AND rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)
+                  AND rp.tgl_registrasi >= {$threeYearsAgo}
                 GROUP BY {$codeField}, {$nameField}
                 ORDER BY frekuensi DESC, aktivitas ASC
                 LIMIT " . (int) $limit;
@@ -1146,11 +1322,13 @@ class Admin extends AdminModule
 
     protected function getOutcomeSummary($icd)
     {
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
         $sql = "SELECT rp.stts AS outcome, COUNT(*) AS jumlah
                 FROM diagnosa_pasien dp
                 INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
                 WHERE dp.kd_penyakit = :icd
-                  AND rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)
+                  AND rp.tgl_registrasi >= {$threeYearsAgo}
                 GROUP BY rp.stts
                 ORDER BY jumlah DESC";
 
@@ -1191,12 +1369,14 @@ class Admin extends AdminModule
 
     protected function getTotalCasesByDiagnosis($icd)
     {
+        $today = $this->_sqlToday();
+        $threeYearsAgo = $this->_sqlSubYears($today, 3);
         $stmt = $this->pdo()->prepare(
             "SELECT COUNT(DISTINCT dp.no_rawat) AS total_pasien
              FROM diagnosa_pasien dp
              INNER JOIN reg_periksa rp ON rp.no_rawat = dp.no_rawat
              WHERE dp.kd_penyakit = ?
-               AND rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 3 YEAR)"
+               AND rp.tgl_registrasi >= {$threeYearsAgo}"
         );
         $stmt->execute([$icd]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2117,8 +2297,9 @@ class Admin extends AdminModule
         $nama = trim($activity['item_nama'] ?? '');
 
         if ($kode !== '') {
+            $sqlNow = $this->_sqlNow();
             $actual = $this->fetchSingleActual(
-                "SELECT NOW() AS tanggal_realisasi, kode AS sumber_referensi
+                "SELECT {$sqlNow} AS tanggal_realisasi, kode AS sumber_referensi
                  FROM prosedur_pasien
                  WHERE no_rawat = ? AND kode = ? AND status = ?
                  LIMIT 1",
