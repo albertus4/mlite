@@ -51,6 +51,7 @@ use Plugins\Master\Src\PersonalPasien;
 use Plugins\Master\Src\LoincLab;
 use Plugins\Master\Src\LoincRad;
 use Plugins\Master\Src\Kfa;
+use Plugins\Master\Src\Ktpl;
 use Plugins\Master\Src\Snomed;
 use Plugins\Master\Src\MliteNotifications;
 
@@ -106,6 +107,7 @@ class Admin extends AdminModule
   protected $loinclab;
   protected $loincrad;
   protected $kfa;
+  protected $ktpl;
   protected $mlitenotifications;
 
     public function init()
@@ -159,6 +161,7 @@ class Admin extends AdminModule
         $this->loinclab = new LoincLab();
         $this->loincrad = new LoincRad();
         $this->kfa = new Kfa();
+        $this->ktpl = new Ktpl();
         $this->mlitenotifications = new MliteNotifications();
     }
 
@@ -196,6 +199,7 @@ class Admin extends AdminModule
             'LOINC Lab' => 'loinclab',
             'LOINC Radiologi' => 'loincrad',
             'KFA' => 'kfa',
+            'KTPL' => 'ktpl',
             'Kategori Perawatan' => 'kategoriperawatan',
             'Kode Satuan' => 'kodesatuan',
             'Master Aturan Pakai' => 'masteraturanpakai',
@@ -517,6 +521,7 @@ class Admin extends AdminModule
         ['name' => 'LOINC Lab', 'url' => url([ADMIN, 'master', 'loinclab']), 'icon' => 'cubes', 'desc' => 'Master LOINC Lab'],
         ['name' => 'LOINC Radiologi', 'url' => url([ADMIN, 'master', 'loincrad']), 'icon' => 'cubes', 'desc' => 'Master LOINC Radiologi'],
         ['name' => 'KFA', 'url' => url([ADMIN, 'master', 'kfa']), 'icon' => 'cubes', 'desc' => 'Master KFA'],
+        ['name' => 'KTPL', 'url' => url([ADMIN, 'master', 'ktpl']), 'icon' => 'cubes', 'desc' => 'Master KTPL'],
       ];
       return $this->draw('manage.html', ['sub_modules' => htmlspecialchars_array($sub_modules)]);
     }
@@ -3221,6 +3226,203 @@ class Admin extends AdminModule
         exit();
     }
     /* End LOINC Rad Section */
+
+    /* Start KTPL Section */
+    public function getKtpl()
+    {
+      $this->_addHeaderFiles();
+      $this->core->addJS(url([ADMIN, 'master', 'ktpljs']), 'footer');
+      $return = $this->ktpl->getIndex();
+      return $this->draw('ktpl.html', [
+        'ktpl' => $return
+      ]);
+    }
+
+    public function anyKtplForm()
+    {
+        $return = $this->ktpl->anyForm();
+        echo $this->draw('ktpl.form.html', ['ktpl' => $return]);
+        exit();
+    }
+
+    public function anyKtplDisplay()
+    {
+        $return = $this->ktpl->anyDisplay();
+        echo $this->draw('ktpl.display.html', ['ktpl' => $return]);
+        exit();
+    }
+
+    public function postKtplSave()
+    {
+      $this->ktpl->postSave();
+      exit();
+    }
+
+    public function postKtplHapus()
+    {
+      $this->ktpl->postHapus();
+      exit();
+    }
+
+    public function getKtplJS()
+    {
+        header('Content-type: text/javascript');
+        echo $this->draw(MODULES.'/master/js/admin/ktpl.js');
+        exit();
+    }
+
+    public function getImportKtpl()
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
+        $url = 'https://basoro.id/downloads/kptl_codes.csv';
+        echo '['.date('d-m-Y H:i:s').'][info] --- Mengimpor KTPL dari ' . $url . '<br>';
+
+        $tempFile = sys_get_temp_dir() . '/ktpl_temp.csv';
+
+        if (!file_exists($tempFile) || (time() - filemtime($tempFile) > 86400) || filesize($tempFile) == 0) {
+            echo '['.date('d-m-Y H:i:s').'][info] Mendownload file... (ini mungkin butuh waktu)<br>';
+            $fp = fopen($tempFile, 'w+');
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+            curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                echo '['.date('d-m-Y H:i:s').'][error] Download error: ' . curl_error($ch) . '<br>';
+            }
+
+            curl_close($ch);
+            fclose($fp);
+
+            if (filesize($tempFile) == 0) {
+                echo '['.date('d-m-Y H:i:s').'][error] File yang didownload kosong.<br>';
+                unlink($tempFile);
+                exit();
+            }
+
+            echo '['.date('d-m-Y H:i:s').'][info] File didownload (' . round(filesize($tempFile) / 1024, 2) . ' KB).<br>';
+        } else {
+            echo '['.date('d-m-Y H:i:s').'][info] Menggunakan file cache lokal (' . round(filesize($tempFile) / 1024, 2) . ' KB).<br>';
+        }
+
+        echo '['.date('d-m-Y H:i:s').'][info] Memulai proses import...<br>';
+
+        try {
+            $pdo = $this->core->db()->pdo();
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+            // Bersihkan data kosong dari import sebelumnya
+            $pdo->exec("DELETE FROM mlite_ktpl WHERE kode_ktpl = '' OR nama_ktpl = ''");
+            echo '['.date('d-m-Y H:i:s').'][info] Data kosong dari import sebelumnya telah dibersihkan.<br>';
+
+            $fp = fopen($tempFile, 'r');
+            if ($fp === false) {
+                echo '['.date('d-m-Y H:i:s').'][error] Gagal membuka file.<br>';
+                exit();
+            }
+
+            // Skip header
+            fgets($fp);
+
+            $count = 0;
+            $batchSize = 1000;
+
+            // Helper: parse CSV line, extract only first $maxFields fields
+            // This avoids binary embedding column breaking fgetcsv
+            $parseCsvFields = function($line, $maxFields = 6) {
+                $fields = [];
+                $field = '';
+                $inQuote = false;
+                $len = strlen($line);
+                for ($i = 0; $i < $len; $i++) {
+                    $ch = $line[$i];
+                    if ($inQuote) {
+                        if ($ch === '"') {
+                            if ($i + 1 < $len && $line[$i + 1] === '"') {
+                                $field .= '"';
+                                $i++;
+                            } else {
+                                $inQuote = false;
+                            }
+                        } else {
+                            $field .= $ch;
+                        }
+                    } else {
+                        if ($ch === '"') {
+                            $inQuote = true;
+                        } elseif ($ch === ',') {
+                            $fields[] = $field;
+                            $field = '';
+                            if (count($fields) >= $maxFields) break;
+                        } else {
+                            $field .= $ch;
+                        }
+                    }
+                }
+                $fields[] = $field;
+                return array_slice($fields, 0, $maxFields);
+            };
+
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare("REPLACE INTO mlite_ktpl
+                (kode_ktpl, nama_ktpl, has_modifier, modifier_count, status)
+                VALUES (?, ?, ?, ?, ?)");
+
+            while (($line = fgets($fp)) !== false) {
+                $line = rtrim($line, "\r\n");
+                if ($line === '') continue;
+
+                // Skip lines that look like continuation of binary data (no comma = not a CSV row)
+                if (strpos($line, ',') === false) continue;
+
+                $row = $parseCsvFields($line, 6);
+                if (count($row) < 3) continue;
+
+                $base_code = trim((string) ($row[1] ?? ''));
+                $name = trim((string) ($row[2] ?? ''));
+                $status = trim((string) ($row[3] ?? 'Aktif'));
+                $has_modifier = (int) ($row[4] ?? 0);
+                $modifier_count = (int) ($row[5] ?? 0);
+
+                if ($base_code === '' || !is_numeric($base_code)) continue;
+
+                $stmt->execute([
+                    $base_code, $name, $has_modifier, $modifier_count, $status
+                ]);
+                $count++;
+
+                if ($count % $batchSize === 0) {
+                    $pdo->commit();
+                    $pdo->beginTransaction();
+                    echo '['.date('d-m-Y H:i:s').'][info] Berhasil mengimpor ' . $count . ' data...<br>';
+                    if (ob_get_level() > 0) ob_flush();
+                    flush();
+                }
+            }
+
+            fclose($fp);
+
+            if ($pdo->inTransaction()) {
+                $pdo->commit();
+            }
+
+            if ($count === 0) {
+                echo '['.date('d-m-Y H:i:s').'][warning] Total 0. File CSV mungkin kosong atau format tidak sesuai.<br>';
+            }
+            echo '['.date('d-m-Y H:i:s').'][info] Impor selesai! Total: ' . $count . ' data.<br>';
+
+        } catch (\Exception $e) {
+            if (isset($pdo) && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            echo '['.date('d-m-Y H:i:s').'][error] Terjadi kesalahan: ' . $e->getMessage() . '<br>';
+        }
+        exit();
+    }
+    /* End KTPL Section */
 
     /* Start KFA Section */
     public function getKfa()

@@ -2619,10 +2619,32 @@ switch ($version) {
 
         $return = '6.3.6';
         break;
+
+    case '6.3.6':
+        if (DBDRIVER == 'sqlite') {
+            $this->core->db()->pdo()->exec("CREATE TABLE IF NOT EXISTS `mlite_ktpl` (
+              `kode_ktpl` TEXT PRIMARY KEY,
+              `nama_ktpl` TEXT,
+              `has_modifier` INTEGER NOT NULL DEFAULT 0,
+              `modifier_count` INTEGER NOT NULL DEFAULT 0,
+              `status` TEXT NOT NULL DEFAULT 'Aktif'
+            );");
+        } else {
+            $this->core->db()->pdo()->exec("CREATE TABLE IF NOT EXISTS `mlite_ktpl` (
+              `kode_ktpl` varchar(50) NOT NULL,
+              `nama_ktpl` text,
+              `has_modifier` int(11) NOT NULL DEFAULT 0,
+              `modifier_count` int(11) NOT NULL DEFAULT 0,
+              `status` enum('Aktif','Tidak Aktif') NOT NULL DEFAULT 'Aktif',
+              PRIMARY KEY (`kode_ktpl`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;");
+        }
+        $return = '6.3.7';
+        break;
     }
 
     if (!isset($return) || !$return) {
-        $return = '6.3.6';
+        $return = '6.3.7';
     }
 
 return $return;

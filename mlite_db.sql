@@ -2243,6 +2243,15 @@ CREATE TABLE `mlite_kfa` (
   PRIMARY KEY (`kode_kfa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
+CREATE TABLE `mlite_ktpl` (
+  `kode_ktpl` varchar(50) NOT NULL,
+  `nama_ktpl` text,
+  `has_modifier` int(11) NOT NULL DEFAULT 0,
+  `modifier_count` int(11) NOT NULL DEFAULT 0,
+  `status` enum('Aktif','Tidak Aktif') NOT NULL DEFAULT 'Aktif',
+  PRIMARY KEY (`kode_ktpl`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+
 
 CREATE TABLE `mlite_clinical_pathway` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
