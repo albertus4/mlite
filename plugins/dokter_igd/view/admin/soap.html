@@ -225,13 +225,13 @@
               data-instruksi="{?=isset_or($data.instruksi)?}"
               data-evaluasi="{?=isset_or($data.evaluasi)?}"
               data-spo2="{?=isset_or($data.spo2)?}"
-              {if: $this->core->getUserInfo('username', $_SESSION['mlite_user']) != $value.nip}disabled{/if}
+              {if: $this->core->getUserInfo('username', $_SESSION['mlite_user']) != $data.nip}disabled{/if}
               ><span class="fa fa-edit"></span><span class="hidden-xs"> Edit</span></button>
             <button type="button" name="button" class="btn btn-danger btn-xs hapus_soap"
               data-no_rawat="{?=isset_or($data.no_rawat)?}"
               data-tgl_perawatan="{?=isset_or($data.tgl_perawatan)?}"
               data-jam_rawat="{?=isset_or($data.jam_rawat)?}"
-              {if: $this->core->getUserInfo('username', $_SESSION['mlite_user']) != $value.nip}disabled{/if}
+              {if: $this->core->getUserInfo('username', $_SESSION['mlite_user']) != $data.nip}disabled{/if}
               ><span class="fa fa-trash"></span><span class="hidden-xs"> Hapus</span></button>
           </div>
         </td>

@@ -147,6 +147,33 @@
   });
 </script>
 <script type="text/javascript">
+  // Fungsi untuk membersihkan bootbox modal yang masih terbuka
+  function closeExistingBootbox() {
+    var existingModals = document.querySelectorAll('.bootbox.modal');
+    existingModals.forEach(function(modal) {
+      var $modal = $(modal);
+      if ($modal.hasClass('in') || $modal.is(':visible')) {
+        $modal.modal('hide');
+      }
+      $modal.remove();
+    });
+    // Hapus backdrop yang tersisa
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open');
+  }
+
+  // Event handler saat bootbox modal ditutup - bersihkan sesi
+  $(document).on('hidden.bs.modal', '.bootbox', function () {
+    $(this).remove();
+    // Bersihkan backdrop yang tersisa
+    setTimeout(function() {
+      if ($('.bootbox.modal').length === 0) {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+      }
+    }, 100);
+  });
+
   $(document).on('click', 'a[href="#soap"]', function(event){
     var baseURL = mlite.url + '/' + mlite.admin;
     event.preventDefault();
@@ -264,6 +291,10 @@
   $(document).on('click', 'a[href="#status_rawat"]', function(event){
     var baseURL = mlite.url + '/' + mlite.admin;
     event.preventDefault();
+    
+    // Tutup bootbox modal yang masih terbuka sebelum buka baru
+    closeExistingBootbox();
+    
     var url = baseURL + '/igd/statusrawat?t=' + mlite.token;
     var no_rawat = $(this).attr("data-no_rawat");
     var stts = $(this).attr("data-stts");
@@ -311,6 +342,8 @@
         ],
         callback: function (result) {
             console.log(result);
+            // Bersihkan sesi setelah modal ditutup
+            closeExistingBootbox();
             // ketika ditekan tombol ok
             if (result){
               // mengirimkan perintah penghapusan
@@ -332,6 +365,10 @@
   $(document).on('click', 'a[href="#status_lanjut"]', function(event){
     var baseURL = mlite.url + '/' + mlite.admin;
     event.preventDefault();
+    
+    // Tutup bootbox modal yang masih terbuka sebelum buka baru
+    closeExistingBootbox();
+    
     var url = baseURL + '/igd/statuslanjut?t=' + mlite.token;
     var no_rawat = $(this).attr("data-no_rawat");
     // tampilkan dialog konfirmasi
@@ -346,22 +383,6 @@
         + '</div>'
         + '';
 
-    // bootbox.confirm("Apakah pasien dimasukkan dalam kamar inap?", function(result){
-    //   // ketika ditekan tombol ok
-    //   if (result){
-    //     // mengirimkan perintah penghapusan
-    //     $.post(url, {
-    //       no_rawat: no_rawat
-    //     } ,function(data) {
-    //       // sembunyikan form, tampilkan data yang sudah di perbaharui, tampilkan notif
-    //       $("#display").load(baseURL + '/igd/display?t=' + mlite.token);
-    //       $('#notif').html("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\" style=\"border-radius:0px;margin-top:-15px;\">"+
-    //       "Status periksa pasien telah disimpan!"+
-    //       "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
-    //       "</div>").show();
-    //     });
-    //   }
-    // });
     bootbox.dialog({
       message: set_status_lanjut,
       title: 'Set Status Lanjut Pasien',
@@ -371,7 +392,8 @@
           className: 'btn-primary',
           callback() {
             var status_lanjut = $('#status_lanjut').find(':selected').val();
-            //console.log(tgl_keluar);
+            // Bersihkan sesi setelah modal ditutup
+            closeExistingBootbox();
             $.post(url, {
               no_rawat: no_rawat,
               status_lanjut: status_lanjut
@@ -391,6 +413,14 @@
                 $("#display").load(baseURL + '/igd/display?t=' + mlite.token);
               }
             });
+          }
+        },
+        cancel: {
+          label: 'Batal',
+          className: 'btn-default',
+          callback() {
+            // Bersihkan sesi saat batal
+            closeExistingBootbox();
           }
         }
       }

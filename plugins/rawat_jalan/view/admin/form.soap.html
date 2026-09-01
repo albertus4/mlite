@@ -184,6 +184,17 @@
                       </button>
                     </span>
                   </div>
+                  <div class="input-group" style="margin-top: 6px; position: relative;">
+                    <input type="text" name="snomed_search" id="snomed_search" class="form-control" placeholder="Cari SNOMED-CT..." autocomplete="off" />
+                    <input type="hidden" name="snomed_concept_id" id="snomed_concept_id" />
+                    <input type="hidden" name="snomed_term" id="snomed_term" />
+                    <ul class="list-group" id="snomedList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <span class="input-group-btn">
+                      <button id="simpan_mapping_snomed" class="btn btn-info btn-block">
+                        <i class="fa fa-save"></i>
+                      </button>
+                    </span>
+                  </div>
                 </div>
               </div>
               <div class="col-sm-6">
@@ -216,6 +227,17 @@
                         <button id="simpan_icd9" class="btn btn-primary btn-block">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
+                    </span>
+                  </div>
+                  <div class="input-group" style="margin-top: 6px; position: relative;">
+                    <input type="text" name="snomed_search_icd9" id="snomed_search_icd9" class="form-control" placeholder="Cari SNOMED-CT..." autocomplete="off" />
+                    <input type="hidden" name="snomed_concept_id_icd9" id="snomed_concept_id_icd9" />
+                    <input type="hidden" name="snomed_term_icd9" id="snomed_term_icd9" />
+                    <ul class="list-group" id="snomedListIcd9" style="z-index:1000;position:absolute;width:100%;top:100%;left:0;"></ul>
+                    <span class="input-group-btn">
+                      <button id="simpan_mapping_snomed_icd9" class="btn btn-info btn-block">
+                        <i class="fa fa-save"></i>
+                      </button>
                     </span>
                   </div>
                 </div>
@@ -454,6 +476,8 @@
     var nama = $('input:text[name=icd9]').val();
     var kode = $('#kode_icd9').text();
     var status = $('input:hidden[name=status]').val();
+    var snomed_concept_id = $('input[name=snomed_concept_id_icd9]').val();
+    var snomed_term = $('input[name=snomed_term_icd9]').val();
 
     var url = baseURL + '/rawat_jalan/saveicd9?t=' + mlite.token;
 
@@ -462,7 +486,9 @@
       prioritas: prioritas,
       nama: nama,
       status: status,
-      kode: kode
+      kode: kode,
+      snomed_concept_id: snomed_concept_id,
+      snomed_term: snomed_term
     } ,function(data) {
       $("#display_icd").show().load(baseURL + '/rawat_jalan/displayicd?no_rawat=' + no_rawat + '&t=' + mlite.token);
       //bersih();
@@ -483,6 +509,8 @@
     var nama = $('input:text[name=icd10]').val();
     var kode = $('#kode_icd10').text();
     var status = $('input:hidden[name=status]').val();
+    var snomed_concept_id = $('input[name=snomed_concept_id]').val();
+    var snomed_term = $('input[name=snomed_term]').val();
 
     var url = baseURL + '/rawat_jalan/saveicd10?t=' + mlite.token;
 
@@ -491,7 +519,9 @@
       prioritas: prioritas,
       nama: nama,
       status: status,
-      kd_penyakit: kode
+      kd_penyakit: kode,
+      snomed_concept_id: snomed_concept_id,
+      snomed_term: snomed_term
     } ,function(data) {
       $("#display_icd").show().load(baseURL + '/rawat_jalan/displayicd?no_rawat=' + no_rawat + '&t=' + mlite.token);
       //bersih();
@@ -499,6 +529,131 @@
       "Data ICD 10 (Diagnosa) pasien telah disimpan!"+
       "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
       "</div>").show();
+    });
+  });
+</script>
+<script type="text/javascript">
+  $("#form_soap").on("click", "#simpan_mapping_snomed_icd9", function(event){
+    var baseURL = mlite.url + '/' + mlite.admin;
+    event.preventDefault();
+    var no_rawat = $('input:text[name=no_rawat]').val();
+    var kd_tindakan = $('#kode_icd9').text();
+    var snomed_concept_id = $('input[name=snomed_concept_id_icd9]').val();
+    var snomed_term = $('input[name=snomed_term_icd9]').val();
+    var url = baseURL + '/rawat_jalan/savemappingsnomedicd9?t=' + mlite.token;
+    $.post(url, {
+      no_rawat: no_rawat,
+      kd_tindakan: kd_tindakan,
+      snomed_concept_id: snomed_concept_id,
+      snomed_term: snomed_term
+    }, function(response){
+      if(response === '1') {
+        $("#display_icd").show().load(baseURL + '/rawat_jalan/displayicd?no_rawat=' + no_rawat + '&t=' + mlite.token);
+        $('#notif').html("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\" style=\"border-radius:0px;margin-top:-15px;\">"+
+        "Mapping SNOMED-CT ICD 9 berhasil disimpan!"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
+        "</div>").show();
+      } else {
+        $('#notif').html("<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\" style=\"border-radius:0px;margin-top:-15px;\">"+
+        "Gagal menyimpan mapping SNOMED-CT ICD 9. Pastikan prosedur ICD 9 sudah tersimpan."+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
+        "</div>").show();
+      }
+    });
+  });
+</script>
+<script type="text/javascript">
+  $(function() {
+    var baseURL = mlite.url + '/' + mlite.admin;
+    var snomedAjaxUrl = baseURL + '/rawat_jalan/ajax?t=' + mlite.token;
+    $('#snomed_search').keyup(function(){
+      var query = ($(this).val() || '').toString();
+      if (query.length < 3) { $('#snomedList').fadeOut(); return; }
+      $.ajax({
+        url: snomedAjaxUrl + '&show=snomed&s=' + encodeURIComponent(query),
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var $list = $('#snomedList'); $list.empty();
+          (data || []).slice(0, 30).forEach(function (it) {
+            var $li = $('<li class="list-group-item link-class"></li>');
+            $li.text((it && it.text) ? it.text : '');
+            $li.data('kode', it && it.kode ? it.kode : '');
+            $li.data('istilah', it && it.istilah ? it.istilah : '');
+            $list.append($li);
+          });
+          $list.fadeIn();
+        },
+        error: function() { $('#snomedList').fadeOut(); }
+      });
+    });
+    $('#snomedList').on('click', 'li', function(){
+      var kode = ($(this).data('kode') || '').toString();
+      var istilah = ($(this).data('istilah') || '').toString();
+      $('#snomed_search').val(istilah);
+      $('#snomed_concept_id').val(kode);
+      $('#snomed_term').val(istilah);
+      $('#snomedList').fadeOut();
+    });
+    $('#snomed_search_icd9').keyup(function(){
+      var query = ($(this).val() || '').toString();
+      if (query.length < 3) { $('#snomedListIcd9').fadeOut(); return; }
+      $.ajax({
+        url: snomedAjaxUrl + '&show=snomed&s=' + encodeURIComponent(query),
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var $list = $('#snomedListIcd9'); $list.empty();
+          (data || []).slice(0, 30).forEach(function (it) {
+            var $li = $('<li class="list-group-item link-class"></li>');
+            $li.text((it && it.text) ? it.text : '');
+            $li.data('kode', it && it.kode ? it.kode : '');
+            $li.data('istilah', it && it.istilah ? it.istilah : '');
+            $list.append($li);
+          });
+          $list.fadeIn();
+        },
+        error: function() { $('#snomedListIcd9').fadeOut(); }
+      });
+    });
+    $('#snomedListIcd9').on('click', 'li', function(){
+      var kode = ($(this).data('kode') || '').toString();
+      var istilah = ($(this).data('istilah') || '').toString();
+      $('#snomed_search_icd9').val(istilah);
+      $('#snomed_concept_id_icd9').val(kode);
+      $('#snomed_term_icd9').val(istilah);
+      $('#snomedListIcd9').fadeOut();
+    });
+  });
+</script>
+<script type="text/javascript">
+  $("#form_soap").on("click", "#simpan_mapping_snomed", function(event){
+    var baseURL = mlite.url + '/' + mlite.admin;
+    event.preventDefault();
+    var no_rawat = $('input:text[name=no_rawat]').val();
+    var kd_penyakit = $('#kode_icd10').text();
+    var snomed_concept_id = $('input[name=snomed_concept_id]').val();
+    var snomed_term = $('input[name=snomed_term]').val();
+    var url = baseURL + '/rawat_jalan/savemappingsnomedicd?t=' + mlite.token;
+    $.post(url, {
+      no_rawat: no_rawat,
+      kd_penyakit: kd_penyakit,
+      snomed_concept_id: snomed_concept_id,
+      snomed_term: snomed_term,
+      status_penyakit: 'Baru'
+    }, function(response){
+      if(response === '1') {
+        $("#display_icd").show().load(baseURL + '/rawat_jalan/displayicd?no_rawat=' + no_rawat + '&t=' + mlite.token);
+        $('#notif').html("<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\" style=\"border-radius:0px;margin-top:-15px;\">"+
+        "Mapping SNOMED-CT berhasil disimpan!"+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
+        "</div>").show();
+      } else {
+        $('#notif').html("<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\" style=\"border-radius:0px;margin-top:-15px;\">"+
+        "Gagal menyimpan mapping SNOMED-CT. Pastikan diagnosa ICD 10 sudah tersimpan."+
+        "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">&times;</button>"+
+        "</div>").show();
+      }
     });
   });
 </script>
