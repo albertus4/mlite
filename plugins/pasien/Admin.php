@@ -1449,7 +1449,7 @@ class Admin extends AdminModule
         if (isset($_POST["query"])) {
           $output = '';
           $key = "%" . $_POST["query"] . "%";
-          $rows = $this->db('propinsi')->like('nm_prop', $key)->asc('kd_prop')->limit(10)->toArray();
+          $rows = $this->db('propinsi')->like('nm_prop', $key)->asc('kd_prop')->limit(50)->toArray();
           $output = '';
           if (count($rows)) {
             foreach ($rows as $row) {
@@ -1463,7 +1463,7 @@ class Admin extends AdminModule
         if (isset($_POST["query"])) {
           $output = '';
           $key = "%" . $_POST["query"] . "%";
-          $rows = $this->db('kabupaten')->like('nm_kab', $key)->asc('kd_kab')->limit(10)->toArray();
+          $rows = $this->db('kabupaten')->like('nm_kab', $key)->asc('kd_kab')->limit(50)->toArray();
           $output = '';
           if (count($rows)) {
             foreach ($rows as $row) {
@@ -1477,7 +1477,7 @@ class Admin extends AdminModule
         if (isset($_POST["query"])) {
           $output = '';
           $key = "%" . $_POST["query"] . "%";
-          $rows = $this->db('kecamatan')->like('nm_kec', $key)->asc('kd_kec')->limit(10)->toArray();
+          $rows = $this->db('kecamatan')->like('nm_kec', $key)->asc('kd_kec')->limit(50)->toArray();
           $output = '';
           if (count($rows)) {
             foreach ($rows as $row) {
@@ -1491,7 +1491,7 @@ class Admin extends AdminModule
         if (isset($_POST["query"])) {
           $output = '';
           $key = "%" . $_POST["query"] . "%";
-          $rows = $this->db('kelurahan')->like('nm_kel', $key)->asc('kd_kel')->limit(10)->toArray();
+          $rows = $this->db('kelurahan')->like('nm_kel', $key)->asc('kd_kel')->limit(50)->toArray();
           $output = '';
           if (count($rows)) {
             foreach ($rows as $row) {

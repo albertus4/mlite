@@ -187,11 +187,12 @@
                   </div>
                   <label for="" class="col-sm-1 control-label">Sex</label>
                   <div class="col-sm-2">
-                    <input type="text" name="sep_jenis_kelamin_nama" id="sep_jenis_kelamin_nama" class="form-control" value="">
-                    <div hidden="true">
-                      <input type="text" name="sep_jenis_kelamin_kode" id="sep_jenis_kelamin_kode" class="form-control" value="">
-                    </div>
-                    <ul class="list-group" id="jenis_kelaminList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_jenis_kelamin_nama" id="sep_jenis_kelamin_nama" class="form-control" data-kode="sep_jenis_kelamin_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="L">Laki-Laki</option>
+                      <option value="P">Perempuan</option>
+                    </select>
+                    <input type="hidden" name="sep_jenis_kelamin_kode" id="sep_jenis_kelamin_kode" value="">
                   </div>
                 </div>
                 <div class="form-group clearfix">
@@ -207,8 +208,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Eksekutif</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_eksekutif_nama" id="sep_eksekutif_nama" class="form-control" value="">
-                    <ul class="list-group" id="eksekutifList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_eksekutif_nama" id="sep_eksekutif_nama" class="form-control" data-kode="sep_eksekutif_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -218,8 +222,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Asal Rujukan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_asal_faskes_nama" id="sep_asal_faskes_nama" class="form-control" value="">
-                    <ul class="list-group" id="asalfaskesList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_asal_faskes_nama" id="sep_asal_faskes_nama" class="form-control" data-kode="sep_asal_faskes_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">Faskes 1</option>
+                      <option value="2">Faskes 2 (RS)</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -229,8 +236,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Jenis Layanan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_pelayanan_nama" id="sep_pelayanan_nama" class="form-control" value="">
-                    <ul class="list-group" id="pelayananList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_pelayanan_nama" id="sep_pelayanan_nama" class="form-control" data-kode="sep_pelayanan_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">Rawat Inap</option>
+                      <option value="2">Rawat Jalan</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -240,8 +250,12 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Hak Kelas Rawat</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_kelas_nama" id="sep_kelas_nama" class="form-control" value="">
-                    <ul class="list-group" id="kelasList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_kelas_nama" id="sep_kelas_nama" class="form-control" data-kode="sep_kelas_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">KELAS 1</option>
+                      <option value="2">KELAS 2</option>
+                      <option value="3">KELAS 3</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -251,8 +265,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">PPK Rujukan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_asal_rujukan_nama" id="sep_asal_rujukan_nama" class="form-control" value="">
-                    <ul class="list-group" id="faskesList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_asal_rujukan_nama" id="sep_asal_rujukan_nama" class="form-control" data-kode="sep_asal_rujukan_kode">
+                      <option value="">-- Ketik untuk mencari PPK Rujukan --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -272,8 +287,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Spesialis</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_spesialis_nama" id="sep_spesialis_nama" class="form-control" value="">
-                    <ul class="list-group" id="poliList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_spesialis_nama" id="sep_spesialis_nama" class="form-control" data-kode="sep_spesialis_kode">
+                      <option value="">-- Ketik untuk mencari Spesialis --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -283,8 +299,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">DPJP</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_dpjp_yang_melayani_nama" id="sep_dpjp_yang_melayani_nama" class="form-control" value="">
-                    <ul class="list-group" id="dokterdpjpList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_dpjp_yang_melayani_nama" id="sep_dpjp_yang_melayani_nama" class="form-control" data-kode="sep_dpjp_yang_melayani_kode">
+                      <option value="">-- Ketik untuk mencari DPJP --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -294,8 +311,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">DPJP Pelayanan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_dpjp_pelayanan_nama" id="sep_dpjp_pelayanan_nama" class="form-control" value="">
-                    <ul class="list-group" id="dokterdpjpList2" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_dpjp_pelayanan_nama" id="sep_dpjp_pelayanan_nama" class="form-control" data-kode="sep_dpjp_pelayanan_kode">
+                      <option value="">-- Ketik untuk mencari DPJP Pelayanan --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -325,8 +343,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Diagnosa</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_diagnosa_nama" id="sep_diagnosa_nama" class="form-control" value="">
-                    <ul class="list-group" id="diagnosaList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_diagnosa_nama" id="sep_diagnosa_nama" class="form-control" data-kode="sep_diagnosa_kode">
+                      <option value="">-- Ketik untuk mencari Diagnosa --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -344,8 +363,16 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Naik Kelas Rawat</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_naik_kelas_nama" id="sep_naik_kelas_nama" class="form-control" value="">
-                    <ul class="list-group" id="naikkelasList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_naik_kelas_nama" id="sep_naik_kelas_nama" class="form-control" data-kode="sep_naik_kelas_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">VVIP</option>
+                      <option value="2">VIP</option>
+                      <option value="3">KELAS 1</option>
+                      <option value="4">KELAS 2</option>
+                      <option value="5">KELAS 3</option>
+                      <option value="6">ICCU</option>
+                      <option value="7">ICU</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -355,8 +382,12 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">PJ Pembiayaan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_pembiayaan_nama" id="sep_pembiayaan_nama" class="form-control" value="">
-                    <ul class="list-group" id="pembiayaanList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_pembiayaan_nama" id="sep_pembiayaan_nama" class="form-control" data-kode="sep_pembiayaan_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">Pribadi</option>
+                      <option value="2">Pemberi Kerja</option>
+                      <option value="3">Asuransi Tambahan</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -366,8 +397,12 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Tujuan Kunjungan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_kunjungan_nama" id="sep_kunjungan_nama" class="form-control" value="">
-                    <ul class="list-group" id="kunjunganList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_kunjungan_nama" id="sep_kunjungan_nama" class="form-control" data-kode="sep_kunjungan_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Normal</option>
+                      <option value="1">Prosedur</option>
+                      <option value="2">Konsul Dokter</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -377,8 +412,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Flag Prosedur</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_prosedur_nama" id="sep_prosedur_nama" class="form-control" value="">
-                    <ul class="list-group" id="prosedurList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_prosedur_nama" id="sep_prosedur_nama" class="form-control" data-kode="sep_prosedur_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Prosedur Tidak Berkelanjutan</option>
+                      <option value="1">Prosedur dan Terapi Berkelanjutan</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -388,8 +426,21 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Pelayanan Penunjang</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_penunjang_nama" id="sep_penunjang_nama" class="form-control" value="">
-                    <ul class="list-group" id="penunjangList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_penunjang_nama" id="sep_penunjang_nama" class="form-control" data-kode="sep_penunjang_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">Radioterapi</option>
+                      <option value="2">Kemoterapi</option>
+                      <option value="3">Rehabilitasi Medik</option>
+                      <option value="4">Rehabilitasi Psikososial</option>
+                      <option value="5">Transfusi Darah</option>
+                      <option value="6">Pelayanan Gigi</option>
+                      <option value="7">Laboratorium</option>
+                      <option value="8">USG</option>
+                      <option value="9">Kemoterapi</option>
+                      <option value="10">Lain-Lain</option>
+                      <option value="11">MRI</option>
+                      <option value="12">HEMODIALISA</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -399,8 +450,14 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Assesment Pelayanan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_assesment_nama" id="sep_assesment_nama" class="form-control" value="">
-                    <ul class="list-group" id="assesmentList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_assesment_nama" id="sep_assesment_nama" class="form-control" data-kode="sep_assesment_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="1">Poli spesialis tidak tersedia pada hari sebelumnya</option>
+                      <option value="2">Jam Poli telah berakhir pada hari sebelumnya</option>
+                      <option value="3">Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</option>
+                      <option value="4">Atas Instruksi RS</option>
+                      <option value="5">Tujuan Kontrol</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -410,8 +467,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">COB</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_cob_nama" id="sep_cob_nama" class="form-control" value="" />
-                    <ul class="list-group" id="cobList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_cob_nama" id="sep_cob_nama" class="form-control" data-kode="sep_cob_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -421,8 +481,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Katarak</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_katarak_nama" id="sep_katarak_nama" class="form-control" value="" />
-                    <ul class="list-group" id="katarakList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_katarak_nama" id="sep_katarak_nama" class="form-control" data-kode="sep_katarak_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -432,8 +495,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Status Kecelakaan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_status_kecelakaan_nama" id="sep_status_kecelakaan_nama" class="form-control" value="" />
-                    <ul class="list-group" id="status_kecelakaanList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_status_kecelakaan_nama" id="sep_status_kecelakaan_nama" class="form-control" data-kode="sep_status_kecelakaan_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -449,8 +515,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Penjamin Kecelakaan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_penjamin_kecelakaan_nama" id="sep_penjamin_kecelakaan_nama" class="form-control" value="" />
-                    <ul class="list-group" id="penjamin_kecelakaanList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_penjamin_kecelakaan_nama" id="sep_penjamin_kecelakaan_nama" class="form-control" data-kode="sep_penjamin_kecelakaan_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -470,8 +539,11 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Suplesi</label>
                   <div class="col-sm-6">
-                    <input type="text" name="sep_suplesi_nama" id="sep_suplesi_nama" class="form-control" value="">
-                    <ul class="list-group" id="listList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="sep_suplesi_nama" id="sep_suplesi_nama" class="form-control" data-kode="sep_suplesi_kode">
+                      <option value="">-- Pilih --</option>
+                      <option value="0">Tidak</option>
+                      <option value="1">Ya</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -487,8 +559,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Propinsi</label>
                   <div class="col-sm-6">
-                    <input type="text" name="provinsi" id="provinsi" class="form-control" value="" />
-                    <ul class="list-group" id="provinsiList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="provinsi" id="provinsi" class="form-control" data-kode="id_provinsi">
+                      <option value="">-- Pilih Propinsi --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -498,8 +571,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Kabupaten</label>
                   <div class="col-sm-6">
-                    <input type="text" name="kabupaten" id="kabupaten" class="form-control" value="" />
-                    <ul class="list-group" id="kabupatenList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="kabupaten" id="kabupaten" class="form-control" data-kode="id_kabupaten" disabled>
+                      <option value="">-- Pilih Propinsi terlebih dahulu --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -509,8 +583,9 @@
                 <div class="form-group clearfix">
                   <label for="" class="col-sm-3 control-label">Kecamatan</label>
                   <div class="col-sm-6">
-                    <input type="text" name="kecamatan" id="kecamatan" class="form-control" value="" />
-                    <ul class="list-group" id="kecamatanList" style="z-index:1000;position:absolute;width:100%;"></ul>
+                    <select name="kecamatan" id="kecamatan" class="form-control" data-kode="id_kecamatan" disabled>
+                      <option value="">-- Pilih Kabupaten terlebih dahulu --</option>
+                    </select>
                   </div>
                   <label for="" class="col-sm-1 control-label">Kode</label>
                   <div class="col-sm-2">
@@ -613,10 +688,10 @@
       $('#sep_norm').val(no_mr_span.trim());
     }
   });
-  $("#sep_asal_rujukan_nama").on("focus click",function(event){
+  $("#sep_asal_rujukan_nama").on("focus",function(event){
     event.preventDefault();
-    var sep_asal_rujukan_nama = $('#sep_asal_rujukan_nama').val();
-    if (sep_asal_rujukan_nama && sep_asal_rujukan_nama.trim() !== '') {
+    var sep_asal_rujukan_kode = $('#sep_asal_rujukan_kode').val();
+    if (sep_asal_rujukan_kode && sep_asal_rujukan_kode.trim() !== '') {
       return;
     }
     var prov_umum_peserta_text = $('#prov_umum_peserta').text();
@@ -942,11 +1017,15 @@ async function openFrista(noka) {
     $('input:text[name=get_no_sep]').val(no_sep);
     $('input:text[name=sep_nomor_rujukan]').val(no_rujukan);
     if(poli == 'null') {
-      $('input:text[name=sep_spesialis_nama]').val('');
+      $('#sep_spesialis_nama').val('');
     } else {
-      $('input:text[name=sep_spesialis_nama]').val(poli);
+      $('#sep_spesialis_nama').append('<option value="' + poli + '" selected>' + poli + '</option>');
+      if ($('#sep_spesialis_nama').data('selectator')) {
+        try { $('#sep_spesialis_nama').selectator('destroy'); } catch(e) {}
+      }
+      $('#sep_spesialis_nama').selectator({ useSearch: true });
     }
-    $('input:text[name=sep_diagnosa_kode]').val(diagnosa);
+    $('#sep_diagnosa_kode').val(diagnosa);
     $('input:text[name=sep_tanggal_sep]').val(tgl_sep);
 
     $("#no_sep_input").removeAttr('hidden');
@@ -1110,40 +1189,40 @@ async function openFrista(noka) {
             if(json_obj[0].response.rujukan.peserta.sex == 'P') {
               var jenis_kelamin = 'Perempuan';
             }
-            $('input:text[name=sep_jenis_kelamin_nama]').val(jenis_kelamin);
-            $('input:text[name=sep_jenis_kelamin_kode]').val(json_obj[0].response.rujukan.peserta.sex);
+            $('#sep_jenis_kelamin_nama').val(jenis_kelamin);
+            $('#sep_jenis_kelamin_kode').val(json_obj[0].response.rujukan.peserta.sex);
             $('input:text[name=sep_tanggal_lahir]').val(json_obj[0].response.rujukan.peserta.tglLahir);
             $('input:text[name=sep_jenis_peserta]').val(json_obj[0].response.rujukan.peserta.jenisPeserta.keterangan);
             $('input:text[name=sep_no_kartu]').val(json_obj[0].response.rujukan.peserta.noKartu);
             $('input:text[name=sep_norm]').val(json_obj[0].response.rujukan.peserta.mr.noMR);
-            $('input:text[name=sep_eksekutif_kode]').val("0");
-            $('input:text[name=sep_eksekutif_nama]').val("Tidak");
-            $('input:text[name=sep_kunjungan_kode]').val("0");
-            $('input:text[name=sep_kunjungan_nama]').val("Normal");
-            $('input:text[name=sep_cob_kode]').val("0");
-            $('input:text[name=sep_cob_nama]').val("Tidak");
-            $('input:text[name=sep_katarak_kode]').val("0");
-            $('input:text[name=sep_katarak_nama]').val("Tidak");
-            $('input:text[name=sep_status_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_status_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_penjamin_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_penjamin_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_suplesi_kode]').val("0");
-            $('input:text[name=sep_suplesi_nama]').val("Tidak");
-            $('input:text[name=sep_pelayanan_kode]').val(json_obj[0].response.rujukan.pelayanan.kode);
-            $('input:text[name=sep_pelayanan_nama]').val(json_obj[0].response.rujukan.pelayanan.nama);
-            $('input:text[name=sep_kelas_kode]').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
-            $('input:text[name=sep_kelas_nama]').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
-            $('input:text[name=sep_asal_faskes_kode]').val(json_obj[0].response.asalFaskes);
-            $('input:text[name=sep_asal_faskes_nama]').val(asalFaskes_nama);
-            $('input:text[name=sep_asal_rujukan_nama]').val(json_obj[0].response.rujukan.provPerujuk.nama);
-            $('input:text[name=sep_asal_rujukan_kode]').val(json_obj[0].response.rujukan.provPerujuk.kode);
+            $('#sep_eksekutif_kode').val("0");
+            $('#sep_eksekutif_nama').val("Tidak");
+            $('#sep_kunjungan_kode').val("0");
+            $('#sep_kunjungan_nama').val("Normal");
+            $('#sep_cob_kode').val("0");
+            $('#sep_cob_nama').val("Tidak");
+            $('#sep_katarak_kode').val("0");
+            $('#sep_katarak_nama').val("Tidak");
+            $('#sep_status_kecelakaan_kode').val("0");
+            $('#sep_status_kecelakaan_nama').val("Tidak");
+            $('#sep_penjamin_kecelakaan_kode').val("0");
+            $('#sep_penjamin_kecelakaan_nama').val("Tidak");
+            $('#sep_suplesi_kode').val("0");
+            $('#sep_suplesi_nama').val("Tidak");
+            $('#sep_pelayanan_kode').val(json_obj[0].response.rujukan.pelayanan.kode);
+            $('#sep_pelayanan_nama').val(json_obj[0].response.rujukan.pelayanan.nama);
+            $('#sep_kelas_kode').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
+            $('#sep_kelas_nama').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
+            $('#sep_asal_faskes_kode').val(json_obj[0].response.asalFaskes);
+            $('#sep_asal_faskes_nama').val(asalFaskes_nama);
+            $('#sep_asal_rujukan_nama').val(json_obj[0].response.rujukan.provPerujuk.nama);
+            $('#sep_asal_rujukan_kode').val(json_obj[0].response.rujukan.provPerujuk.kode);
             $('input:text[name=sep_tanggal_rujukan]').val(json_obj[0].response.rujukan.tglKunjungan);
             $('input:text[name=sep_nomor_rujukan]').val(json_obj[0].response.rujukan.noKunjungan);
-            $('input:text[name=sep_spesialis_kode]').val(json_obj[0].response.rujukan.poliRujukan.kode);
-            $('input:text[name=sep_spesialis_nama]').val(json_obj[0].response.rujukan.poliRujukan.nama);
-            $('input:text[name=sep_diagnosa_kode]').val(json_obj[0].response.rujukan.diagnosa.kode);
-            $('input:text[name=sep_diagnosa_nama]').val(json_obj[0].response.rujukan.diagnosa.nama);
+            $('#sep_spesialis_kode').val(json_obj[0].response.rujukan.poliRujukan.kode);
+            $('#sep_spesialis_nama').val(json_obj[0].response.rujukan.poliRujukan.nama);
+            $('#sep_diagnosa_kode').val(json_obj[0].response.rujukan.diagnosa.kode);
+            $('#sep_diagnosa_nama').val(json_obj[0].response.rujukan.diagnosa.nama);
             $('input:text[name=sep_nomor_telepon]').val(json_obj[0].response.rujukan.peserta.mr.noTelepon);
           } else {
             alert(json_obj[0].metaData.message);
@@ -1176,40 +1255,40 @@ async function openFrista(noka) {
             if(json_obj[0].response.rujukan.peserta.sex == 'P') {
               var jenis_kelamin = 'Perempuan';
             }
-            $('input:text[name=sep_jenis_kelamin_nama]').val(jenis_kelamin);
-            $('input:text[name=sep_jenis_kelamin_kode]').val(json_obj[0].response.rujukan.peserta.sex);
+            $('#sep_jenis_kelamin_nama').val(jenis_kelamin);
+            $('#sep_jenis_kelamin_kode').val(json_obj[0].response.rujukan.peserta.sex);
             $('input:text[name=sep_tanggal_lahir]').val(json_obj[0].response.rujukan.peserta.tglLahir);
             $('input:text[name=sep_jenis_peserta]').val(json_obj[0].response.rujukan.peserta.jenisPeserta.keterangan);
             $('input:text[name=sep_no_kartu]').val(json_obj[0].response.rujukan.peserta.noKartu);
             $('input:text[name=sep_norm]').val(json_obj[0].response.rujukan.peserta.mr.noMR);
-            $('input:text[name=sep_eksekutif_kode]').val("0");
-            $('input:text[name=sep_eksekutif_nama]').val("Tidak");
-            $('input:text[name=sep_kunjungan_kode]').val("0");
-            $('input:text[name=sep_kunjungan_nama]').val("Normal");
-            $('input:text[name=sep_cob_kode]').val("0");
-            $('input:text[name=sep_cob_nama]').val("Tidak");
-            $('input:text[name=sep_katarak_kode]').val("0");
-            $('input:text[name=sep_katarak_nama]').val("Tidak");
-            $('input:text[name=sep_status_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_status_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_penjamin_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_penjamin_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_suplesi_kode]').val("0");
-            $('input:text[name=sep_suplesi_nama]').val("Tidak");
-            $('input:text[name=sep_pelayanan_kode]').val(json_obj[0].response.rujukan.pelayanan.kode);
-            $('input:text[name=sep_pelayanan_nama]').val(json_obj[0].response.rujukan.pelayanan.nama);
-            $('input:text[name=sep_kelas_kode]').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
-            $('input:text[name=sep_kelas_nama]').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
-            $('input:text[name=sep_asal_faskes_kode]').val(json_obj[0].response.asalFaskes);
-            $('input:text[name=sep_asal_faskes_nama]').val(asalFaskes_nama);
-            $('input:text[name=sep_asal_rujukan_nama]').val(json_obj[0].response.rujukan.provPerujuk.nama);
-            $('input:text[name=sep_asal_rujukan_kode]').val(json_obj[0].response.rujukan.provPerujuk.kode);
+            $('#sep_eksekutif_kode').val("0");
+            $('#sep_eksekutif_nama').val("Tidak");
+            $('#sep_kunjungan_kode').val("0");
+            $('#sep_kunjungan_nama').val("Normal");
+            $('#sep_cob_kode').val("0");
+            $('#sep_cob_nama').val("Tidak");
+            $('#sep_katarak_kode').val("0");
+            $('#sep_katarak_nama').val("Tidak");
+            $('#sep_status_kecelakaan_kode').val("0");
+            $('#sep_status_kecelakaan_nama').val("Tidak");
+            $('#sep_penjamin_kecelakaan_kode').val("0");
+            $('#sep_penjamin_kecelakaan_nama').val("Tidak");
+            $('#sep_suplesi_kode').val("0");
+            $('#sep_suplesi_nama').val("Tidak");
+            $('#sep_pelayanan_kode').val(json_obj[0].response.rujukan.pelayanan.kode);
+            $('#sep_pelayanan_nama').val(json_obj[0].response.rujukan.pelayanan.nama);
+            $('#sep_kelas_kode').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
+            $('#sep_kelas_nama').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
+            $('#sep_asal_faskes_kode').val(json_obj[0].response.asalFaskes);
+            $('#sep_asal_faskes_nama').val(asalFaskes_nama);
+            $('#sep_asal_rujukan_nama').val(json_obj[0].response.rujukan.provPerujuk.nama);
+            $('#sep_asal_rujukan_kode').val(json_obj[0].response.rujukan.provPerujuk.kode);
             $('input:text[name=sep_tanggal_rujukan]').val(json_obj[0].response.rujukan.tglKunjungan);
             $('input:text[name=sep_nomor_rujukan]').val(json_obj[0].response.rujukan.noKunjungan);
-            $('input:text[name=sep_spesialis_kode]').val(json_obj[0].response.rujukan.poliRujukan.kode);
-            $('input:text[name=sep_spesialis_nama]').val(json_obj[0].response.rujukan.poliRujukan.nama);
-            $('input:text[name=sep_diagnosa_kode]').val(json_obj[0].response.rujukan.diagnosa.kode);
-            $('input:text[name=sep_diagnosa_nama]').val(json_obj[0].response.rujukan.diagnosa.nama);
+            $('#sep_spesialis_kode').val(json_obj[0].response.rujukan.poliRujukan.kode);
+            $('#sep_spesialis_nama').val(json_obj[0].response.rujukan.poliRujukan.nama);
+            $('#sep_diagnosa_kode').val(json_obj[0].response.rujukan.diagnosa.kode);
+            $('#sep_diagnosa_nama').val(json_obj[0].response.rujukan.diagnosa.nama);
             $('input:text[name=sep_nomor_telepon]').val(json_obj[0].response.rujukan.peserta.mr.noTelepon);
           } else {
             alert(json_obj[0].metaData.message);
@@ -1245,43 +1324,43 @@ async function openFrista(noka) {
               var jenis_kelamin = 'Perempuan';
             }
             if(kode_pelayanan == '1') {
-              $('input:text[name=sep_asal_rujukan_nama]').val(json_obj[0].response.rujukan.provPerujuk.nama);
-              $('input:text[name=sep_asal_rujukan_kode]').val(json_obj[0].response.rujukan.provPerujuk.kode);
+              $('#sep_asal_rujukan_nama').val(json_obj[0].response.rujukan.provPerujuk.nama);
+              $('#sep_asal_rujukan_kode').val(json_obj[0].response.rujukan.provPerujuk.kode);
             } else {
-              $('input:text[name=sep_jenis_kelamin_nama]').val(jenis_kelamin);
-              $('input:text[name=sep_jenis_kelamin_kode]').val(json_obj[0].response.rujukan.peserta.sex);
+              $('#sep_jenis_kelamin_nama').val(jenis_kelamin);
+              $('#sep_jenis_kelamin_kode').val(json_obj[0].response.rujukan.peserta.sex);
               $('input:text[name=sep_tanggal_lahir]').val(json_obj[0].response.rujukan.peserta.tglLahir);
               $('input:text[name=sep_jenis_peserta]').val(json_obj[0].response.rujukan.peserta.jenisPeserta.keterangan);
               $('input:text[name=sep_no_kartu]').val(json_obj[0].response.rujukan.peserta.noKartu);
               $('input:text[name=sep_norm]').val(json_obj[0].response.rujukan.peserta.mr.noMR);
-              $('input:text[name=sep_eksekutif_kode]').val("0");
-              $('input:text[name=sep_eksekutif_nama]').val("Tidak");
-              $('input:text[name=sep_kunjungan_kode]').val("0");
-              $('input:text[name=sep_kunjungan_nama]').val("Normal");
-              $('input:text[name=sep_cob_kode]').val("0");
-              $('input:text[name=sep_cob_nama]').val("Tidak");
-              $('input:text[name=sep_katarak_kode]').val("0");
-              $('input:text[name=sep_katarak_nama]').val("Tidak");
-              $('input:text[name=sep_status_kecelakaan_kode]').val("0");
-              $('input:text[name=sep_status_kecelakaan_nama]').val("Tidak");
-              $('input:text[name=sep_penjamin_kecelakaan_kode]').val("0");
-              $('input:text[name=sep_penjamin_kecelakaan_nama]').val("Tidak");
-              $('input:text[name=sep_suplesi_kode]').val("0");
-              $('input:text[name=sep_suplesi_nama]').val("Tidak");
-              $('input:text[name=sep_pelayanan_kode]').val(json_obj[0].response.rujukan.pelayanan.kode);
-              $('input:text[name=sep_pelayanan_nama]').val(json_obj[0].response.rujukan.pelayanan.nama);
-              $('input:text[name=sep_kelas_kode]').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
-              $('input:text[name=sep_kelas_nama]').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
-              $('input:text[name=sep_asal_faskes_kode]').val(json_obj[0].response.asalFaskes);
-              $('input:text[name=sep_asal_faskes_nama]').val(asalFaskes_nama);
-              $('input:text[name=sep_asal_rujukan_nama]').val(json_obj[0].response.rujukan.provPerujuk.nama);
-              $('input:text[name=sep_asal_rujukan_kode]').val(json_obj[0].response.rujukan.provPerujuk.kode);
+              $('#sep_eksekutif_kode').val("0");
+              $('#sep_eksekutif_nama').val("Tidak");
+              $('#sep_kunjungan_kode').val("0");
+              $('#sep_kunjungan_nama').val("Normal");
+              $('#sep_cob_kode').val("0");
+              $('#sep_cob_nama').val("Tidak");
+              $('#sep_katarak_kode').val("0");
+              $('#sep_katarak_nama').val("Tidak");
+              $('#sep_status_kecelakaan_kode').val("0");
+              $('#sep_status_kecelakaan_nama').val("Tidak");
+              $('#sep_penjamin_kecelakaan_kode').val("0");
+              $('#sep_penjamin_kecelakaan_nama').val("Tidak");
+              $('#sep_suplesi_kode').val("0");
+              $('#sep_suplesi_nama').val("Tidak");
+              $('#sep_pelayanan_kode').val(json_obj[0].response.rujukan.pelayanan.kode);
+              $('#sep_pelayanan_nama').val(json_obj[0].response.rujukan.pelayanan.nama);
+              $('#sep_kelas_kode').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
+              $('#sep_kelas_nama').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
+              $('#sep_asal_faskes_kode').val(json_obj[0].response.asalFaskes);
+              $('#sep_asal_faskes_nama').val(asalFaskes_nama);
+              $('#sep_asal_rujukan_nama').val(json_obj[0].response.rujukan.provPerujuk.nama);
+              $('#sep_asal_rujukan_kode').val(json_obj[0].response.rujukan.provPerujuk.kode);
               $('input:text[name=sep_tanggal_rujukan]').val(json_obj[0].response.rujukan.tglKunjungan);
               $('input:text[name=sep_nomor_rujukan]').val(json_obj[0].response.rujukan.noKunjungan);
-              $('input:text[name=sep_spesialis_kode]').val(json_obj[0].response.rujukan.poliRujukan.kode);
-              $('input:text[name=sep_spesialis_nama]').val(json_obj[0].response.rujukan.poliRujukan.nama);
-              $('input:text[name=sep_diagnosa_kode]').val(json_obj[0].response.rujukan.diagnosa.kode);
-              $('input:text[name=sep_diagnosa_nama]').val(json_obj[0].response.rujukan.diagnosa.nama);
+              $('#sep_spesialis_kode').val(json_obj[0].response.rujukan.poliRujukan.kode);
+              $('#sep_spesialis_nama').val(json_obj[0].response.rujukan.poliRujukan.nama);
+              $('#sep_diagnosa_kode').val(json_obj[0].response.rujukan.diagnosa.kode);
+              $('#sep_diagnosa_nama').val(json_obj[0].response.rujukan.diagnosa.nama);
               $('input:text[name=sep_nomor_telepon]').val(json_obj[0].response.rujukan.peserta.mr.noTelepon);
             }
           } else {
@@ -1316,40 +1395,40 @@ async function openFrista(noka) {
             if(json_obj[0].response.rujukan.peserta.sex == 'P') {
               var jenis_kelamin = 'Perempuan';
             }
-            $('input:text[name=sep_jenis_kelamin_nama]').val(jenis_kelamin);
-            $('input:text[name=sep_jenis_kelamin_kode]').val(json_obj[0].response.rujukan.peserta.sex);
+            $('#sep_jenis_kelamin_nama').val(jenis_kelamin);
+            $('#sep_jenis_kelamin_kode').val(json_obj[0].response.rujukan.peserta.sex);
             $('input:text[name=sep_tanggal_lahir]').val(json_obj[0].response.rujukan.peserta.tglLahir);
             $('input:text[name=sep_jenis_peserta]').val(json_obj[0].response.rujukan.peserta.jenisPeserta.keterangan);
             $('input:text[name=sep_no_kartu]').val(json_obj[0].response.rujukan.peserta.noKartu);
             $('input:text[name=sep_norm]').val(json_obj[0].response.rujukan.peserta.mr.noMR);
-            $('input:text[name=sep_eksekutif_kode]').val("0");
-            $('input:text[name=sep_eksekutif_nama]').val("Tidak");
-            $('input:text[name=sep_kunjungan_kode]').val("0");
-            $('input:text[name=sep_kunjungan_nama]').val("Normal");
-            $('input:text[name=sep_cob_kode]').val("0");
-            $('input:text[name=sep_cob_nama]').val("Tidak");
-            $('input:text[name=sep_katarak_kode]').val("0");
-            $('input:text[name=sep_katarak_nama]').val("Tidak");
-            $('input:text[name=sep_status_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_status_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_penjamin_kecelakaan_kode]').val("0");
-            $('input:text[name=sep_penjamin_kecelakaan_nama]').val("Tidak");
-            $('input:text[name=sep_suplesi_kode]').val("0");
-            $('input:text[name=sep_suplesi_nama]').val("Tidak");
-            $('input:text[name=sep_pelayanan_kode]').val(json_obj[0].response.rujukan.pelayanan.kode);
-            $('input:text[name=sep_pelayanan_nama]').val(json_obj[0].response.rujukan.pelayanan.nama);
-            $('input:text[name=sep_kelas_kode]').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
-            $('input:text[name=sep_kelas_nama]').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
-            $('input:text[name=sep_asal_faskes_kode]').val(json_obj[0].response.asalFaskes);
-            $('input:text[name=sep_asal_faskes_nama]').val(asalFaskes_nama);
-            $('input:text[name=sep_asal_rujukan_nama]').val(json_obj[0].response.rujukan.provPerujuk.nama);
-            $('input:text[name=sep_asal_rujukan_kode]').val(json_obj[0].response.rujukan.provPerujuk.kode);
+            $('#sep_eksekutif_kode').val("0");
+            $('#sep_eksekutif_nama').val("Tidak");
+            $('#sep_kunjungan_kode').val("0");
+            $('#sep_kunjungan_nama').val("Normal");
+            $('#sep_cob_kode').val("0");
+            $('#sep_cob_nama').val("Tidak");
+            $('#sep_katarak_kode').val("0");
+            $('#sep_katarak_nama').val("Tidak");
+            $('#sep_status_kecelakaan_kode').val("0");
+            $('#sep_status_kecelakaan_nama').val("Tidak");
+            $('#sep_penjamin_kecelakaan_kode').val("0");
+            $('#sep_penjamin_kecelakaan_nama').val("Tidak");
+            $('#sep_suplesi_kode').val("0");
+            $('#sep_suplesi_nama').val("Tidak");
+            $('#sep_pelayanan_kode').val(json_obj[0].response.rujukan.pelayanan.kode);
+            $('#sep_pelayanan_nama').val(json_obj[0].response.rujukan.pelayanan.nama);
+            $('#sep_kelas_kode').val(json_obj[0].response.rujukan.peserta.hakKelas.kode);
+            $('#sep_kelas_nama').val(json_obj[0].response.rujukan.peserta.hakKelas.keterangan);
+            $('#sep_asal_faskes_kode').val(json_obj[0].response.asalFaskes);
+            $('#sep_asal_faskes_nama').val(asalFaskes_nama);
+            $('#sep_asal_rujukan_nama').val(json_obj[0].response.rujukan.provPerujuk.nama);
+            $('#sep_asal_rujukan_kode').val(json_obj[0].response.rujukan.provPerujuk.kode);
             $('input:text[name=sep_tanggal_rujukan]').val(json_obj[0].response.rujukan.tglKunjungan);
             $('input:text[name=sep_nomor_rujukan]').val(json_obj[0].response.rujukan.noKunjungan);
-            $('input:text[name=sep_spesialis_kode]').val(json_obj[0].response.rujukan.poliRujukan.kode);
-            $('input:text[name=sep_spesialis_nama]').val(json_obj[0].response.rujukan.poliRujukan.nama);
-            $('input:text[name=sep_diagnosa_kode]').val(json_obj[0].response.rujukan.diagnosa.kode);
-            $('input:text[name=sep_diagnosa_nama]').val(json_obj[0].response.rujukan.diagnosa.nama);
+            $('#sep_spesialis_kode').val(json_obj[0].response.rujukan.poliRujukan.kode);
+            $('#sep_spesialis_nama').val(json_obj[0].response.rujukan.poliRujukan.nama);
+            $('#sep_diagnosa_kode').val(json_obj[0].response.rujukan.diagnosa.kode);
+            $('#sep_diagnosa_nama').val(json_obj[0].response.rujukan.diagnosa.nama);
             $('input:text[name=sep_nomor_telepon]').val(json_obj[0].response.rujukan.peserta.mr.noTelepon);
           } else {
             alert(json_obj[0].metaData.message);
@@ -1472,584 +1551,353 @@ async function openFrista(noka) {
   // end pencarian
 </script>
 <script type="text/javascript">
-  $("#form_sep").on("click","#sep_cob_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Tidak</li>';
-       output+='<li class=\"list-group-item link-class\">1: Ya</li>';
-       output+='';
-       $('#cobList').fadeIn();
-       $('#cobList').html(output).show();
-  });
-  $('#cobList').on('click', 'li', function(){
-       $('#sep_cob_nama').val($(this).text().split(': ')[1]);
-       $('#sep_cob_kode').val($(this).text().split(': ')[0]);
-       var sep_cob_kode = $('#sep_cob_kode').val();
-       $('#cobList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_katarak_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Tidak</li>';
-       output+='<li class=\"list-group-item link-class\">1: Ya</li>';
-       output+='';
-       $('#katarakList').fadeIn();
-       $('#katarakList').html(output).show();
-  });
-  $('#katarakList').on('click', 'li', function(){
-       $('#sep_katarak_nama').val($(this).text().split(': ')[1]);
-       $('#sep_katarak_kode').val($(this).text().split(': ')[0]);
-       var sep_status_kecelakaan_kode = $('#sep_katarak_kode').val();
-       $('#katarakList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_status_kecelakaan_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Tidak</li>';
-       output+='<li class=\"list-group-item link-class\">1: Ya</li>';
-       output+='';
-       $('#status_kecelakaanList').fadeIn();
-       $('#status_kecelakaanList').html(output).show();
-  });
-  $('#status_kecelakaanList').on('click', 'li', function(){
-       $('#sep_status_kecelakaan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_status_kecelakaan_kode').val($(this).text().split(': ')[0]);
-       var sep_status_kecelakaan_kode = $('#sep_status_kecelakaan_kode').val();
-       $('#status_kecelakaanList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_penjamin_kecelakaan_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Tidak</li>';
-       output+='<li class=\"list-group-item link-class\">1: Ya</li>';
-       output+='';
-       $('#penjamin_kecelakaanList').fadeIn();
-       $('#penjamin_kecelakaanList').html(output).show();
-  });
-  $('#penjamin_kecelakaanList').on('click', 'li', function(){
-       $('#sep_penjamin_kecelakaan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_penjamin_kecelakaan_kode').val($(this).text().split(': ')[0]);
-       var sep_status_kecelakaan_kode = $('#sep_penjamin_kecelakaan_kode').val();
-       $('#penjamin_kecelakaanList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_jenis_kelamin_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">L: Laki-Laki</li>';
-       output+='<li class=\"list-group-item link-class\">P: Perempuan</li>';
-       output+='';
-       $('#jenis_kelaminList').fadeIn();
-       $('#jenis_kelaminList').html(output).show();
-  });
-  $('#jenis_kelaminList').on('click', 'li', function(){
-       $('#sep_jenis_kelamin_nama').val($(this).text().split(': ')[1]);
-       $('#sep_jenis_kelamin_kode').val($(this).text().split(': ')[0]);
-       var sep_jenis_kelamin_kode = $('#sep_jenis_kelamin_kode').val();
-       $('#jenis_kelaminList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_eksekutif_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Tidak</li>';
-       output+='<li class=\"list-group-item link-class\">1: Ya</li>';
-       output+='';
-       $('#eksekutifList').fadeIn();
-       $('#eksekutifList').html(output).show();
-  });
-  $('#eksekutifList').on('click', 'li', function(){
-       $('#sep_eksekutif_nama').val($(this).text().split(': ')[1]);
-       $('#sep_eksekutif_kode').val($(this).text().split(': ')[0]);
-       var sep_eksekutif_kode = $('#sep_eksekutif_kode').val();
-       $('#eksekutifList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_asal_faskes_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: Faskes 1</li>';
-       output+='<li class=\"list-group-item link-class\">2: Faskes 2 (RS)</li>';
-       output+='';
-       $('#asalfaskesList').fadeIn();
-       $('#asalfaskesList').html(output).show();
-  });
-  $('#asalfaskesList').on('click', 'li', function(){
-       $('#sep_asal_faskes_nama').val($(this).text().split(': ')[1]);
-       $('#sep_asal_faskes_kode').val($(this).text().split(': ')[0]);
-       var sep_asal_faskes_kode = $('#sep_asal_faskes_kode').val();
-       $('#asalfaskesList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_pelayanan_nama", function(event){
-  //$('#sep_pelayanan_nama').focus(function(){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: Rawat Inap</li>';
-       output+='<li class=\"list-group-item link-class\">2: Rawat Jalan</li>';
-       output+='';
-       $('#pelayananList').fadeIn();
-       $('#pelayananList').html(output).show();
-  });
-  $('#pelayananList').on('click', 'li', function(){
-       $('#sep_pelayanan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_pelayanan_kode').val($(this).text().split(': ')[0]);
-       var sep_pelayanan_kode = $('#sep_pelayanan_kode').val();
-       $('#pelayananList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_kelas_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: KELAS 1</li>';
-       output+='<li class=\"list-group-item link-class\">2: KELAS 2</li>';
-       output+='<li class=\"list-group-item link-class\">3: KELAS 3</li>';
-       output+='';
-       $('#kelasList').fadeIn();
-       $('#kelasList').html(output).show();
-  });
-  $('#kelasList').on('click', 'li', function(){
-       $('#sep_kelas_nama').val($(this).text().split(': ')[1]);
-       $('#sep_kelas_kode').val($(this).text().split(': ')[0]);
-       var sep_kelas_kode = $('#sep_kelas_kode').val();
-       $('#kelasList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_naik_kelas_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: VVIP</li>';
-       output+='<li class=\"list-group-item link-class\">2: VIP</li>';
-       output+='<li class=\"list-group-item link-class\">3: KELAS 1</li>';
-       output+='<li class=\"list-group-item link-class\">4: KELAS 2</li>';
-       output+='<li class=\"list-group-item link-class\">5: KELAS 3</li>';
-       output+='<li class=\"list-group-item link-class\">6: ICCU</li>';
-       output+='<li class=\"list-group-item link-class\">7: ICU</li>';
-       output+='';
-       $('#naikkelasList').fadeIn();
-       $('#naikkelasList').html(output).show();
-  });
-  $('#naikkelasList').on('click', 'li', function(){
-       $('#sep_naik_kelas_nama').val($(this).text().split(': ')[1]);
-       $('#sep_naik_kelas_kode').val($(this).text().split(': ')[0]);
-       var sep_naik_kelas_kode = $('#sep_naik_kelas_kode').val();
-       $('#naikkelasList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_pembiayaan_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: Pribadi</li>';
-       output+='<li class=\"list-group-item link-class\">2: Pemberi Kerja</li>';
-       output+='<li class=\"list-group-item link-class\">3: Asuransi Tambahan</li>';
-       output+='';
-       $('#pembiayaanList').fadeIn();
-       $('#pembiayaanList').html(output).show();
-  });
-  $('#pembiayaanList').on('click', 'li', function(){
-       $('#sep_pembiayaan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_pembiayaan_kode').val($(this).text().split(': ')[0]);
-       var sep_pembiayaan_kode = $('#sep_pembiayaan_kode').val();
-       $('#pembiayaanList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_kunjungan_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Normal</li>';
-       output+='<li class=\"list-group-item link-class\">1: Prosedur</li>';
-       output+='<li class=\"list-group-item link-class\">2: Konsul Dokter</li>';
-       output+='';
-       $('#kunjunganList').fadeIn();
-       $('#kunjunganList').html(output).show();
-  });
-  $('#kunjunganList').on('click', 'li', function(){
-       $('#sep_kunjungan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_kunjungan_kode').val($(this).text().split(': ')[0]);
-       var sep_kunjungan_kode = $('#sep_kunjungan_kode').val();
-       $('#kunjunganList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_prosedur_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">0: Prosedur Tidak Berkelanjutan</li>';
-       output+='<li class=\"list-group-item link-class\">1: Prosedur dan Terapi Berkelanjutan</li>';
-       output+='';
-       $('#prosedurList').fadeIn();
-       $('#prosedurList').html(output).show();
-  });
-  $('#prosedurList').on('click', 'li', function(){
-       $('#sep_prosedur_nama').val($(this).text().split(': ')[1]);
-       $('#sep_prosedur_kode').val($(this).text().split(': ')[0]);
-       var sep_prosedur_kode = $('#sep_prosedur_kode').val();
-       $('#prosedurList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_penunjang_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: Radioterapi</li>';
-       output+='<li class=\"list-group-item link-class\">2: Kemoterapi</li>';
-       output+='<li class=\"list-group-item link-class\">3: Rehabilitasi Medik</li>';
-       output+='<li class=\"list-group-item link-class\">4: Rehabilitasi Psikososial</li>';
-       output+='<li class=\"list-group-item link-class\">5: Transfusi Darah</li>';
-       output+='<li class=\"list-group-item link-class\">6: Pelayanan Gigi</li>';
-       output+='<li class=\"list-group-item link-class\">7: Laboratorium</li>';
-       output+='<li class=\"list-group-item link-class\">8: USG</li>';
-       output+='<li class=\"list-group-item link-class\">9: Kemoterapi</li>';
-       output+='<li class=\"list-group-item link-class\">10: Lain-Lain</li>';
-       output+='<li class=\"list-group-item link-class\">11: MRI</li>';
-       output+='<li class=\"list-group-item link-class\">12: HEMODIALISA</li>';
-       output+='';
-       $('#penunjangList').fadeIn();
-       $('#penunjangList').html(output).show();
-  });
-  $('#penunjangList').on('click', 'li', function(){
-       $('#sep_penunjang_nama').val($(this).text().split(': ')[1]);
-       $('#sep_penunjang_kode').val($(this).text().split(': ')[0]);
-       var sep_penunjang_kode = $('#sep_penunjang_kode').val();
-       $('#penunjangList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $("#form_sep").on("click","#sep_assesment_nama", function(event){
-       var output='';
-       output+='<li class=\"list-group-item link-class\">1: Poli spesialis tidak tersedia pada hari sebelumnya</li>';
-       output+='<li class=\"list-group-item link-class\">2: Jam Poli telah berakhir pada hari sebelumnya</li>';
-       output+='<li class=\"list-group-item link-class\">3: Dokter Spesialis yang dimaksud tidak praktek pada hari sebelumnya</li>';
-       output+='<li class=\"list-group-item link-class\">4: Atas Instruksi RS</li>';
-       output+='<li class=\"list-group-item link-class\">5: Tujuan Kontrol</li>';
-       output+='';
-       $('#assesmentList').fadeIn();
-       $('#assesmentList').html(output).show();
-  });
-  $('#assesmentList').on('click', 'li', function(){
-       $('#sep_assesment_nama').val($(this).text().split(': ')[1]);
-       $('#sep_assesment_kode').val($(this).text().split(': ')[0]);
-       var sep_assesment_kode = $('#sep_assesment_kode').val();
-       $('#assesmentList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $('#sep_asal_rujukan_nama').keyup(function(){
-       //console.log('Spesialis Nama');
-       var query = $(this).val();
-       var sep_asal_faskes_kode = $('input:text[name=sep_asal_faskes_kode]').val();
-
-       if(query != '')
-       {
-            $.ajax({
-                 url: '{?=url()?}/{?=ADMIN?}/vclaim/faskes/' + encodeURIComponent(query) + '/' + encodeURIComponent(sep_asal_faskes_kode) + '?t={?=$_SESSION["token"]?}',
-                 method:"GET",
-                 data:{},
-                 success:function(data)
-                 {
-                     var data = JSON.parse(data);
-                     var json_obj = [data];
-                     var output='';
-                     if(json_obj[0].metaData.code == 200) {
-                       var faskes = json_obj[0].response.faskes;
-                       for (var i in faskes) {
-                         output+='<li class=\"list-group-item link-class\">' + faskes[i].kode + ': ' + faskes[i].nama + '</li>';
-                       }
-                     } else {
-                       output+='<li class=\"list-group-item link-class\">' + json_obj[0].metaData.message + '</li>';
-                     }
-                     output+='';
-                     //console.log(output);
-                     $('#faskesList').fadeIn();
-                     $('#faskesList').html(output).show();
-                 }
-            });
-       }
-  });
-  $('#faskesList').on('click', 'li', function(){
-       $('#sep_asal_rujukan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_asal_rujukan_kode').val($(this).text().split(': ')[0]);
-       var sep_asal_rujukan_kode = $('#sep_asal_rujukan_kode').val();
-       $('#faskesList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $('#sep_spesialis_nama').keyup(function(){
-       var query = $(this).val();
-       if(query != '')
-       {
-            $.ajax({
-                 url: '{?=url()?}/{?=ADMIN?}/vclaim/poli/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
-                 method:"GET",
-                 data:{},
-                 success:function(data)
-                 {
-                     var data = JSON.parse(data);
-                     var json_obj = [data];
-                     var output='';
-                     if(json_obj[0].metaData.code == 200) {
-                       var poli = json_obj[0].response.poli;
-                       for (var i in poli) {
-                         output+='<li class=\"list-group-item link-class\">' + poli[i].kode + ': ' + poli[i].nama + '</li>';
-                       }
-                     } else {
-                       output+='<li class=\"list-group-item link-class\">' + json_obj[0].metaData.message + '</li>';
-                     }
-                     output+='';
-                     //console.log(output);
-                     $('#poliList').fadeIn();
-                     $('#poliList').html(output).show();
-                 }
-            });
-       }
-  });
-  $('#poliList').on('click', 'li', function(){
-       $('#sep_spesialis_nama').val($(this).text().split(': ')[1]);
-       $('#sep_spesialis_kode').val($(this).text().split(': ')[0]);
-       var sep_spesialis_kode = $('#sep_spesialis_kode').val();
-       $('#poliList').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  var loadDokterDpjpBySpesialisKode = function () {
-    var query = $('#sep_spesialis_kode').val();
-    var sep_pelayanan_kode = $('input:text[name=sep_pelayanan_kode]').val();
-    if ($('#sep_spesialis_kode').val() == 'IGD') {
-      sep_pelayanan_kode = '1';
+  // Global function: Inisialisasi selectator untuk semua select di form SEP
+  // Dapat dipanggil dari parent page setelah #form_sep ditampilkan
+  function initSelectatorFormSep() {
+    // Destroy existing selectator instances first
+    $('#form_sep select').each(function() {
+      if ($(this).data('selectator')) {
+        try { $(this).selectator('destroy'); } catch(e) {}
+      }
+    });
+    var staticFields = [
+      'sep_jenis_kelamin_nama', 'sep_eksekutif_nama', 'sep_asal_faskes_nama',
+      'sep_pelayanan_nama', 'sep_kelas_nama', 'sep_naik_kelas_nama',
+      'sep_pembiayaan_nama', 'sep_kunjungan_nama', 'sep_prosedur_nama',
+      'sep_penunjang_nama', 'sep_assesment_nama', 'sep_cob_nama',
+      'sep_katarak_nama', 'sep_status_kecelakaan_nama', 'sep_penjamin_kecelakaan_nama',
+      'sep_suplesi_nama'
+    ];
+    for (var i = 0; i < staticFields.length; i++) {
+      (function(fieldId) {
+        var $sel = $('#' + fieldId);
+        var kodeField = $sel.data('kode');
+        if (kodeField) {
+          $sel.on('change', function() {
+            $('#' + kodeField).val($(this).val());
+          });
+        }
+        $sel.selectator({ useSearch: true });
+      })(staticFields[i]);
     }
-    var sep_tanggal_sep = $('input:text[name=sep_tanggal_sep]').val();
 
-    if (query != '') {
-      $.ajax({
-        url: '{?=url()?}/{?=ADMIN?}/vclaim/dokterdpjp/' + encodeURIComponent(sep_pelayanan_kode) + '/' + encodeURIComponent(sep_tanggal_sep) + '/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
-        method:"GET",
-        data:{},
-        success:function(data)
-        {
-          var data = JSON.parse(data);
-          var json_obj = [data];
-          var output='';
-          if(json_obj[0].metaData.code == 200) {
-            var dokterdpjp = json_obj[0].response.list;
-            for (var i in dokterdpjp) {
-              output+='<li class=\"list-group-item link-class\">' + dokterdpjp[i].kode + ': ' + dokterdpjp[i].nama + '</li>';
+    // === PPK Rujukan (faskes search) ===
+    var $asalRujukan = $('#sep_asal_rujukan_nama');
+    var asalRujukanUrl = '{?=url()?}/{?=ADMIN?}/vclaim/faskes/';
+    $asalRujukan.selectator({
+      useSearch: true,
+      minSearchLength: 1,
+      load: function(query, callback) {
+        var sep_asal_faskes_kode = $('#sep_asal_faskes_kode').val();
+        $.ajax({
+          url: asalRujukanUrl + encodeURIComponent(query) + '/' + encodeURIComponent(sep_asal_faskes_kode) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            var results = [];
+            if (json_obj[0].metaData.code == 200) {
+              var faskes = json_obj[0].response.faskes;
+              for (var i = 0; i < faskes.length; i++) {
+                results.push({value: faskes[i].kode, text: faskes[i].nama});
+              }
             }
-          } else {
-            output+='<li class=\"list-group-item link-class\">' + json_obj[0].metaData.message + '</li>';
+            callback(results);
           }
-          output+='';
-          $('#dokterdpjpList').fadeIn();
-          $('#dokterdpjpList').html(output).show();
+        });
+      }
+    });
+    $asalRujukan.on('change', function() {
+      $('#sep_asal_rujukan_kode').val($(this).val());
+    });
+
+    // === Spesialis (poli search) ===
+    var $spesialis = $('#sep_spesialis_nama');
+    var spesialisUrl = '{?=url()?}/{?=ADMIN?}/vclaim/poli/';
+    $spesialis.selectator({
+      useSearch: true,
+      minSearchLength: 1,
+      load: function(query, callback) {
+        $.ajax({
+          url: spesialisUrl + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            var results = [];
+            if (json_obj[0].metaData.code == 200) {
+              var poli = json_obj[0].response.poli;
+              for (var i = 0; i < poli.length; i++) {
+                results.push({value: poli[i].kode, text: poli[i].nama});
+              }
+            }
+            callback(results);
+          }
+        });
+      }
+    });
+    $spesialis.on('change', function() {
+      $('#sep_spesialis_kode').val($(this).val());
+      // Trigger load DPJP when spesialis changes
+      loadDpjpBySpesialis();
+    });
+
+    // === DPJP (dokter search) ===
+    var $dpjp = $('#sep_dpjp_yang_melayani_nama');
+    $dpjp.selectator({
+      useSearch: true,
+      minSearchLength: 1,
+      load: function(query, callback) {
+        var sep_pelayanan_kode = $('#sep_pelayanan_kode').val();
+        var sep_spesialis_kode = $('#sep_spesialis_kode').val();
+        if (sep_spesialis_kode == 'IGD') sep_pelayanan_kode = '1';
+        var sep_tanggal_sep = $('#sep_tanggal_sep').val();
+        $.ajax({
+          url: '{?=url()?}/{?=ADMIN?}/vclaim/dokterdpjp/' + encodeURIComponent(sep_pelayanan_kode) + '/' + encodeURIComponent(sep_tanggal_sep) + '/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            var results = [];
+            if (json_obj[0].metaData.code == 200) {
+              var dokterdpjp = json_obj[0].response.list;
+              for (var i = 0; i < dokterdpjp.length; i++) {
+                results.push({value: dokterdpjp[i].kode, text: dokterdpjp[i].nama});
+              }
+            }
+            callback(results);
+          }
+        });
+      }
+    });
+    $dpjp.on('change', function() {
+      var kode_pelayanan = $('#sep_pelayanan_kode').val();
+      $('#sep_dpjp_yang_melayani_kode').val($(this).val());
+      $('#sep_dpjp_pelayanan_kode').val($(this).val());
+      var $dpjpPelayanan = $('#sep_dpjp_pelayanan_nama');
+      $dpjpPelayanan.find('option').not(':first').remove();
+      var text = $(this).find('option:selected').text();
+      var val = $(this).val();
+      if (val && text) {
+        $dpjpPelayanan.append('<option value="' + val + '" selected>' + text + '</option>');
+      }
+      if ($dpjpPelayanan.data('selectator')) {
+        try { $dpjpPelayanan.selectator('destroy'); } catch(e) {}
+      }
+      $dpjpPelayanan.selectator({ useSearch: true });
+      if (kode_pelayanan == '1') {
+        $spesialis.val('');
+        $('#sep_spesialis_kode').val('');
+        if ($spesialis.data('selectator')) {
+          try { $spesialis.selectator('destroy'); } catch(e) {}
+        }
+        $spesialis.selectator({ useSearch: true });
+      }
+    });
+
+    // === DPJP Pelayanan (dokter search) ===
+    var $dpjpPelayanan = $('#sep_dpjp_pelayanan_nama');
+    $dpjpPelayanan.selectator({
+      useSearch: true,
+      minSearchLength: 1,
+      load: function(query, callback) {
+        var sep_pelayanan_kode = $('#sep_pelayanan_kode').val();
+        var sep_tanggal_sep = $('#sep_tanggal_sep').val();
+        $.ajax({
+          url: '{?=url()?}/{?=ADMIN?}/vclaim/dokterdpjp/' + encodeURIComponent(sep_pelayanan_kode) + '/' + encodeURIComponent(sep_tanggal_sep) + '/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            var results = [];
+            if (json_obj[0].metaData.code == 200) {
+              var dokterdpjp = json_obj[0].response.list;
+              for (var i = 0; i < dokterdpjp.length; i++) {
+                results.push({value: dokterdpjp[i].kode, text: dokterdpjp[i].nama});
+              }
+            }
+            callback(results);
+          }
+        });
+      }
+    });
+    $dpjpPelayanan.on('change', function() {
+      $('#sep_dpjp_pelayanan_kode').val($(this).val());
+    });
+
+    // === Load DPJP by spesialis kode (auto-load when spesialis selected) ===
+    var loadDpjpBySpesialis = function() {
+      var query = $('#sep_spesialis_kode').val();
+      var sep_pelayanan_kode = $('#sep_pelayanan_kode').val();
+      if (query == 'IGD') sep_pelayanan_kode = '1';
+      var sep_tanggal_sep = $('#sep_tanggal_sep').val();
+      if (query != '') {
+        $.ajax({
+          url: '{?=url()?}/{?=ADMIN?}/vclaim/dokterdpjp/' + encodeURIComponent(sep_pelayanan_kode) + '/' + encodeURIComponent(sep_tanggal_sep) + '/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            if (json_obj[0].metaData.code == 200) {
+              var dokterdpjp = json_obj[0].response.list;
+              $dpjp.find('option').not(':first').remove();
+              for (var i = 0; i < dokterdpjp.length; i++) {
+                $dpjp.append('<option value="' + dokterdpjp[i].kode + '">' + dokterdpjp[i].nama + '</option>');
+              }
+              if ($dpjp.data('selectator')) {
+                try { $dpjp.selectator('destroy'); } catch(e) {}
+              }
+              $dpjp.selectator({ useSearch: true });
+            }
+          }
+        });
+      }
+    };
+
+    // === Diagnosa (diagnosa search) ===
+    var $diagnosa = $('#sep_diagnosa_nama');
+    var diagnosaUrl = '{?=url()?}/{?=ADMIN?}/vclaim/diagnosa/';
+    $diagnosa.selectator({
+      useSearch: true,
+      minSearchLength: 1,
+      load: function(query, callback) {
+        $.ajax({
+          url: diagnosaUrl + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
+          method: 'GET',
+          data: {},
+          success: function(data) {
+            var data = JSON.parse(data);
+            var json_obj = [data];
+            var results = [];
+            if (json_obj[0].metaData.code == 200) {
+              var diagnosa = json_obj[0].response.diagnosa;
+              for (var i = 0; i < diagnosa.length; i++) {
+                results.push({value: diagnosa[i].kode, text: diagnosa[i].nama});
+              }
+            }
+            callback(results);
+          }
+        });
+      }
+    });
+    $diagnosa.on('change', function() {
+      $('#sep_diagnosa_kode').val($(this).val());
+    });
+
+    // === Wilayah cascading selects ===
+    var $provinsi = $('#provinsi');
+    var $kabupaten = $('#kabupaten');
+    var $kecamatan = $('#kecamatan');
+
+    function refreshSelect(selectId, items) {
+      var $sel = $(selectId);
+      if ($sel.data('selectator')) {
+        try { $sel.selectator('destroy'); } catch(e) {}
+      }
+      $sel.find('option').not(':first').remove();
+      for (var i = 0; i < items.length; i++) {
+        $sel.append('<option value="' + items[i].value + '">' + items[i].text + '</option>');
+      }
+      $sel.selectator({ useSearch: true });
+    }
+
+    // Load provinsi on init using list endpoint (returns JSON)
+    $.ajax({
+      url: "{?=url([ADMIN, 'pasien', 'wilayah?show=listkabupaten'])?}".replace('listkabupaten', 'caripropinsi'),
+      method: 'POST',
+      data: {query: ''},
+      success: function(data) {
+        var $c = $('<div>').html(data);
+        var items = [];
+        $c.find('li').each(function() {
+          var t = $(this).text().trim();
+          var p = t.split(': ');
+          if (p.length >= 2) items.push({value: p[0], text: p.slice(1).join(': ')});
+        });
+        refreshSelect('#provinsi', items);
+      }
+    });
+
+    // Cascade: provinsi -> kabupaten -> kecamatan
+    $provinsi.on('change', function() {
+      var kd = $(this).val();
+      $('#id_provinsi').val(kd);
+      if (kd) {
+        $kabupaten.prop('disabled', false);
+        $.ajax({
+          url: "{?=url([ADMIN, 'pasien', 'wilayah?show=listkabupaten'])?}",
+          method: 'GET',
+          data: {kd_prop: kd},
+          dataType: 'json',
+          success: function(list) {
+            refreshSelect('#kabupaten', list.map(function(r){ return {value: r.kd, text: r.nm}; }));
+          }
+        });
+      } else {
+        $kabupaten.prop('disabled', true);
+        refreshSelect('#kabupaten', []);
+        $kecamatan.prop('disabled', true);
+        refreshSelect('#kecamatan', []);
+        $('#id_provinsi, #id_kabupaten, #id_kecamatan').val('');
+      }
+    });
+
+    $kabupaten.on('change', function() {
+      var kd = $(this).val();
+      $('#id_kabupaten').val(kd);
+      if (kd) {
+        $kecamatan.prop('disabled', false);
+        $.ajax({
+          url: "{?=url([ADMIN, 'pasien', 'wilayah?show=listkecamatan'])?}",
+          method: 'GET',
+          data: {kd_kab: kd},
+          dataType: 'json',
+          success: function(list) {
+            refreshSelect('#kecamatan', list.map(function(r){ return {value: r.kd, text: r.nm}; }));
+          }
+        });
+      } else {
+        $kecamatan.prop('disabled', true);
+        refreshSelect('#kecamatan', []);
+        $('#id_kecamatan').val('');
+      }
+    });
+
+    $kecamatan.on('change', function() {
+      $('#id_kecamatan').val($(this).val());
+    });
+  }
+
+  // Jalankan saat DOM ready
+  $(function(){
+    initSelectatorFormSep();
+
+    // Reinitialize saat #form_sep pertama kali ditampilkan
+    // Parent page memanggil $("#form_sep").show()
+    var _formSep = document.getElementById('form_sep');
+    if (_formSep) {
+      var _obs = new MutationObserver(function(){
+        if (_formSep.style && _formSep.style.display && _formSep.style.display !== 'none') {
+          setTimeout(function(){ initSelectatorFormSep(); }, 100);
+          _obs.disconnect();
         }
       });
+      _obs.observe(_formSep, { attributes: true, attributeFilter: ['style'] });
     }
-  };
 
-  $('#sep_spesialis_kode').on('keyup click', function(){
-    loadDokterDpjpBySpesialisKode();
-  });
-  $('#dokterdpjpList').on('click', 'li', function(){
-    var kode_pelayanan = $('#sep_pelayanan_kode').val();
-       $('#sep_dpjp_yang_melayani_nama').val($(this).text().split(': ')[1]);
-       $('#sep_dpjp_yang_melayani_kode').val($(this).text().split(': ')[0]);
-       var sep_dpjp_yang_melayani_kode = $('#sep_dpjp_yang_melayani_kode').val();
-       $('#sep_dpjp_pelayanan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_dpjp_pelayanan_kode').val($(this).text().split(': ')[0]);
-       var sep_dpjp_pelayanan_kode = $('#sep_dpjp_pelayanan_kode').val();
-       $('#dokterdpjpList').fadeOut();
-    if (kode_pelayanan == '1') {
-       $('#sep_spesialis_kode').val('');
-       $('#sep_spesialis_nama').val('');
-    }
+    // Fallback: reinitialize saat user klik/focus pada select di form_sep
+    $('#form_sep').on('focusin', 'select', function(){
+      var $sel = $(this);
+      if (!$sel.data('selectator')) {
+        $sel.selectator({ useSearch: true });
+      }
+    });
   });
 </script>
-<script type="text/javascript">
-  $('#sep_dpjp_pelayanan_nama').keyup(function(){
-       var query = $(this).val();
-       var sep_pelayanan_kode = $('input:text[name=sep_pelayanan_kode]').val();
-       var sep_tanggal_sep = $('input:text[name=sep_tanggal_sep]').val();
 
-       if(query != '')
-       {
-            $.ajax({
-                 url: '{?=url()?}/{?=ADMIN?}/vclaim/dokterdpjp/' + encodeURIComponent(sep_pelayanan_kode) + '/' + encodeURIComponent(sep_tanggal_sep) + '/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
-                 method:"GET",
-                 data:{},
-                 success:function(data)
-                 {
-                     var data = JSON.parse(data);
-                     var json_obj = [data];
-                     var output='';
-                     if(json_obj[0].metaData.code == 200) {
-                       var dokterdpjp = json_obj[0].response.list;
-                       for (var i in dokterdpjp) {
-                         output+='<li class=\"list-group-item link-class\">' + dokterdpjp[i].kode + ': ' + dokterdpjp[i].nama + '</li>';
-                       }
-                     } else {
-                       output+='<li class=\"list-group-item link-class\">' + json_obj[0].metaData.message + '</li>';
-                     }
-                     output+='';
-                     //console.log(output);
-                     $('#dokterdpjpList2').fadeIn();
-                     $('#dokterdpjpList2').html(output).show();
-                 }
-            });
-       }
-  });
-  $('#dokterdpjpList2').on('click', 'li', function(){
-       $('#sep_dpjp_pelayanan_nama').val($(this).text().split(': ')[1]);
-       $('#sep_dpjp_pelayanan_kode').val($(this).text().split(': ')[0]);
-       var sep_dpjp_pelayanan_kode = $('#sep_dpjp_pelayanan_kode').val();
-       $('#dokterdpjpList2').fadeOut();
-  });
-</script>
-<script type="text/javascript">
-  $('#sep_diagnosa_nama').keyup(function(){
-       var query = $(this).val();
-       if(query != '')
-       {
-            $.ajax({
-                 url: '{?=url()?}/{?=ADMIN?}/vclaim/diagnosa/' + encodeURIComponent(query) + '?t={?=$_SESSION["token"]?}',
-                 method:"GET",
-                 data:{},
-                 success:function(data)
-                 {
-                     var data = JSON.parse(data);
-                     var json_obj = [data];
-                     var output='';
-                     if(json_obj[0].metaData.code == 200) {
-                       var diagnosa = json_obj[0].response.diagnosa;
-                       for (var i in diagnosa) {
-                         output+='<li class=\"list-group-item link-class\">' + diagnosa[i].kode + ': ' + diagnosa[i].nama + '</li>';
-                       }
-                     } else {
-                       output+='<li class=\"list-group-item link-class\">' + json_obj[0].metaData.message + '</li>';
-                     }
-                     output+='';
-                     //console.log(output);
-                     $('#diagnosaList').fadeIn();
-                     $('#diagnosaList').html(output).show();
-                 }
-            });
-       }
-  });
-  $('#diagnosaList').on('click', 'li', function(){
-       $('#sep_diagnosa_nama').val($(this).text().split(': ')[1]);
-       $('#sep_diagnosa_kode').val($(this).text().split(': ')[0]);
-       var sep_diagnosa_kode = $('#sep_diagnosa_kode').val();
-       $('#diagnosaList').fadeOut();
-  });
-</script>
-<script>
- $(document).ready(function(){
-      $('#provinsi').keyup(function(){
-           var query = $(this).val();
-           if(query != '')
-           {
-                $.ajax({
-                     url: "{?=url([ADMIN, 'pasien', 'wilayah?show=caripropinsi'])?}",
-                     method:"POST",
-                     data:{query:query},
-                     success:function(data)
-                     {
-                          //console.log(data);
-                          $('#provinsiList').fadeIn();
-                          $('#provinsiList').html(data);
-                     }
-                });
-           }
-      });
-      $('#provinsiList').on('click', 'li', function(){
-           $('#provinsi').val($(this).text().split(': ')[1]);
-           $('#id_provinsi').val($(this).text().split(': ')[0]);
-           var id_provinsi = $('#id_provinsi').val();
-           $('#provinsiList').fadeOut();
-           //console.log(id_provinsi);
 
-           $('#kabupaten').keyup(function(){
-                var query = $(this).val();
-                if(query != '')
-                {
-                     $.ajax({
-                          url: "{?=url([ADMIN, 'pasien', 'wilayah?show=carikabupaten'])?}",
-                          method:"POST",
-                          data:{query:query,id_prov:id_provinsi},
-                          success:function(data)
-                          {
-                               $('#kabupatenList').fadeIn();
-                               $('#kabupatenList').html(data);
-                          }
-                     });
-                }
-           });
-
-      });
-      $('#kabupatenList').on('click', 'li', function(){
-           $('#kabupaten').val($(this).text().split(': ')[1]);
-           $('#id_kabupaten').val($(this).text().split(': ')[0]);
-           var id_kabupaten = $('#id_kabupaten').val();
-           $('#kabupatenList').fadeOut();
-           //console.log(id_kabupaten);
-
-           $('#kecamatan').keyup(function(){
-                var query = $(this).val();
-                if(query != '')
-                {
-                     $.ajax({
-                          url: "{?=url([ADMIN, 'pasien', 'wilayah?show=carikecamatan'])?}",
-                          method:"POST",
-                          data:{query:query,id_kab:id_kabupaten},
-                          success:function(data)
-                          {
-                               $('#kecamatanList').fadeIn();
-                               $('#kecamatanList').html(data);
-                          }
-                     });
-                }
-           });
-
-      });
-
-      $('#kecamatanList').on('click', 'li', function(){
-           $('#kecamatan').val($(this).text().split(': ')[1]);
-           $('#id_kecamatan').val($(this).text().split(': ')[0]);
-           var id_kecamatan = $('#id_kecamatan').val();
-           $('#kecamatanList').fadeOut();
-           //console.log(id_kecamatan);
-
-           $('#kelurahan').keyup(function(){
-                var query = $(this).val();
-                if(query != '')
-                {
-                     $.ajax({
-                          url: "{?=url([ADMIN, 'pasien', 'wilayah?show=carikelurahan'])?}",
-                          method:"POST",
-                          data:{query:query,id_kec:id_kecamatan},
-                          success:function(data)
-                          {
-                               $('#kelurahanList').fadeIn();
-                               $('#kelurahanList').html(data);
-                          }
-                     });
-                }
-           });
-
-      });
-
-      $('#kelurahanList').on('click', 'li', function(){
-           $('#kelurahan').val($(this).text().split(': ')[1]);
-           $('#id_kelurahan').val($(this).text().split(': ')[0]);
-           $('#kelurahanList').fadeOut();
-           //console.log(id_kelurahan);
-
-      });
-
- });
- </script>
