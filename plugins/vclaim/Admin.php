@@ -2640,10 +2640,18 @@ class Admin extends AdminModule
     exit();
   }
 
-  function getAddAntrian($no_rkm_medis, $no_rawat, $nomor_rujukan,  $jenis_kunjungan) {
+  function getAddAntrian($no_rkm_medis, $no_rawat, $nomor_rujukan = '', $jenis_kunjungan = '') {
 
     try {
-        if (empty($no_rkm_medis) || empty($no_rawat) || empty($nomor_rujukan) || empty($jenis_kunjungan)) {
+        // Handle 3-arg case: when nomor_rujukan is empty, URL double-slash collapses
+        // and jenis_kunjungan ends up as 3rd arg. Detect by checking if $jenis_kunjungan is empty
+        // but $nomor_rujukan looks like a jenis_kunjungan value (1-4).
+        if (empty($jenis_kunjungan) && in_array($nomor_rujukan, ['1', '2', '3', '4'])) {
+            $jenis_kunjungan = $nomor_rujukan;
+            $nomor_rujukan = '';
+        }
+
+        if (empty($no_rkm_medis) || empty($no_rawat) || empty($jenis_kunjungan)) {
             throw new \Exception("Parameter tidak lengkap.");
         }
 
